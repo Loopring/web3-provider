@@ -1,7 +1,11 @@
-const replace = require("@rollup/plugin-replace");
-const commonjs = require("@rollup/plugin-commonjs");
+import replace from "@rollup/plugin-replace"
+import commonjs from "@rollup/plugin-commonjs";
 
 module.exports = {
+  /**
+     * @param {{ output: { esModule: boolean; }; plugins: any[]; }} config
+     * @param {{ env: any; }} options
+     */
   rollup(config, options) {
     config.output.esModule = true;
     config.plugins = config.plugins.map((p) =>

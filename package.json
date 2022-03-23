@@ -1,14 +1,16 @@
 {
   "name": "@loopring-web/web3-provider",
-  "version": "1.0.0",
-  "main": "src/index.ts",
-  "private": false,
+  "version": "1.0.1",
   "main": "dist/index.js",
+  "private": false,
   "typings": "dist/index.d.ts",
   "module": "dist/web3-provider.esm.js",
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=14.x"
+  },
   "build": {
     "files": [
       "build/**/*",
@@ -22,7 +24,7 @@
   },
   "scripts": {
     "compile": "tsc -p tsconfig.json",
-    "build": "tsdx build"  ,
+    "build": "tsdx build",
     "prepublishOnly": "NODE_ENV=production tsdx build"
   },
   "dependencies": {
@@ -33,12 +35,15 @@
     "@walletconnect/client": "^1.6.0",
     "@walletconnect/qrcode-modal": "^1.6.0",
     "@walletconnect/web3-provider": "^1.6.0",
-    "rxjs": "^7.2.0",
+    "rxjs-compat": "^6.6.7",
     "web3": "^1.5.1"
   },
+  "type": "module",
+  "types": "",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^18.0.0",
     "@types/node": "^12.0.0",
-    "tsdx": "^0.14.1",
-    "build": "tsdx build"
+    "build": "tsdx build",
+    "tsdx": "^0.14.1"
   }
 }
