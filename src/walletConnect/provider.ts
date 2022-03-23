@@ -60,11 +60,11 @@ export const WalletConnectProvide = async (props?: {
       walletServices.sendConnect(web3, provider);
     }
     return { provider, web3 };
-  } catch (error:any) {
+  } catch (error) {
     console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.WalletConnect,
-      error: error?.message,
+      error:( error as any)?.message,
     });
   }
 };

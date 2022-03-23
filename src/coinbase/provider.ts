@@ -1,16 +1,12 @@
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { ErrorType } from "../command";
-import {
-  ConnectProviders,
-  SoursURL,
-  RPC_URLS,
-} from "@loopring-web/common-resources";
+import { ConnectProviders, ErrorType, RPC_URLS } from "../command";
+
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
 
 const APP_NAME = "Loopring App";
-const APP_LOGO_URL = `${SoursURL}/logo.png`;
+const APP_LOGO_URL = `${"https://static.loopring.io/assets/"}/logo.png`;
 
 export const CoinbaseProvide = async (props?: {
   darkMode?: boolean;
@@ -37,11 +33,11 @@ export const CoinbaseProvide = async (props?: {
       connectName: ConnectProviders.Coinbase,
       error: {
         code:
-          error.message ===
+          (error as any).message ===
           `Global ethereum is not Coinbase, Please disable other Wallet Plugin`
             ? 700002
             : 700003,
-        message: error.message,
+        message: (error as any).message,
       },
     });
   }

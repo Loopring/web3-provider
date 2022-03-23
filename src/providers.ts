@@ -8,9 +8,8 @@ import { CoinbaseProvide } from "./coinbase";
 import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { ConnectProviders } from "@loopring-web/common-resources";
 import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
-import { ExtensionSubscribe, ExtensionUnsubscribe } from "./command";
+import { ConnectProviders, ExtensionSubscribe, ExtensionUnsubscribe } from "./command";
 import { Web3Provider } from "@ethersproject/providers";
 
 export class ConnectProvides {

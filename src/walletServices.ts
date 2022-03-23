@@ -1,4 +1,4 @@
-import { Subject } from "rxjs";
+import { Subject } from "rxjs-compat";
 import Web3 from "web3";
 import { Commands, ErrorType, ProcessingType } from "./command";
 
@@ -6,21 +6,20 @@ import { Commands, ErrorType, ProcessingType } from "./command";
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
 const AvaiableNetwork = [1, 5];
-export const walletServices = {
-  subject,
-  sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
+export const walletServices = {subject,
+    sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
     subject.next({
       status: Commands.Processing,
       data: { type: type, opts: props },
     });
   },
-  sendError: async (errorType: keyof typeof ErrorType, errorObj: any) => {
+    sendError: async (errorType: keyof typeof ErrorType, errorObj: any) => {
     subject.next({
       status: Commands.Error,
       data: { type: errorType, opts: errorObj },
     });
   },
-  sendConnect: async (web3: Web3, provider: any) => {
+    sendConnect: async (web3: Web3, provider: any) => {
     try {
       let accounts, chainId: number;
       //@ts-ignore
@@ -41,7 +40,7 @@ export const walletServices = {
       subject.next({ status: "Error", data: { error } });
     }
   },
-  sendDisconnect: async (code: any, reason: any) => {
+    sendDisconnect: async (code: any, reason: any) => {
     // if (connectProvides.usedProvide) {
     //   if (typeof connectProvides.usedProvide?.disconnect === "function") {
     //     connectProvides.usedProvide?.disconnect();
@@ -53,6 +52,7 @@ export const walletServices = {
     });
   },
 
-  // clearMessages: () => subject.next(),
-  onSocket: () => subject.asObservable(),
-};
+    // clearMessages: () => subject.next(),
+    onSocket: () => subject.asObservable(),
+  };
+

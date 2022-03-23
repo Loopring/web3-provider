@@ -30,20 +30,20 @@ export const MetaMaskProvide = async (
     } else {
       return undefined;
     }
-  } catch (error:any) {
+  } catch (error) {
     console.error(
       "Error happen at connect wallet with MetaMask:",
-      error.message
+      (error as any)?.message
     );
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.MetaMask,
       error: {
         code:
-          error.message ===
+          (error as any)?.message ===
           `Global ethereum is not MetaMask, Please disable other Wallet Plugin`
             ? 700002
             : 700003,
-        message: error.message,
+        message: (error as any)?.message,
       },
     });
   }
