@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import { walletServices } from "./walletServices";
+import { ConnectProvides } from './providers';
 
 export enum Commands {
   ConnectWallet = "ConnectWallet",
@@ -44,6 +45,7 @@ export const ExtensionUnsubscribe = async (provider: any) => {
   }
 };
 
+
 export enum ConnectProviders {
   unknown = "unknown",
   MetaMask = "MetaMask",
@@ -51,6 +53,6 @@ export enum ConnectProviders {
   Coinbase = "Coinbase",
 }
 export const RPC_URLS: { [chainId: number]: string } = {
-  1: process.env.RPC_URL_1 as string,
-  5: process.env.RPC_URL_5 as string,
+  1: process.env[`${ConnectProvides.APP_FRAMeWORK }RPC_URL_1`]as string,
+  5: process.env[`${ConnectProvides.APP_FRAMeWORK }RPC_URL_5`] as string,
 };

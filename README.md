@@ -33,6 +33,10 @@ RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
 WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
 WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
 ```
+```ts
+ /*DEFAULET is "REACT_APP_" */ 
+ ConnectProvides.APP_FRAMeWORK = "VUE_APP_";
+```
 Demo for React hook
 
 ## 👉 [What is Loopring?](https://loopring.org/#/)

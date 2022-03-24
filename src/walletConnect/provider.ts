@@ -1,25 +1,29 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { ConnectProviders, ErrorType, RPC_URLS } from "../command";
+import {  ConnectProviders, ErrorType, RPC_URLS } from "../command";
 import { IsMobile } from "../utilities";
+import { ConnectProvides } from '../providers';
 const POLLING_INTERVAL = 12000;
 const DEFAULT_BRIDGE = "https://bridge.walletconnect.org"
+
 export const WalletConnectProvide = async (props?: {
   account?: string;
   darkMode?: boolean;
 }): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
   try {
-     const BRIDGE_URL = (await fetch(process.env.WALLET_CONNECT_PING??'')
+     console.log('WALLET_CONNECT_PING:',process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`])
+     const BRIDGE_URL = (await fetch(process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`]??'')
         .then(({ status }) => {
           return status === 200
-            ? process.env.WALLET_CONNECT_BRIDGE
+            ? process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`]
             : DEFAULT_BRIDGE;
         })
         .catch(() => {
           return DEFAULT_BRIDGE;
         }))??DEFAULT_BRIDGE
 
+    console.log('WALLET_CONNECT_BRIDGE:',process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`])
 
     // const BRIDGE_URL = "https://bridge.walletconnect.org";
 

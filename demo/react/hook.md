@@ -4,7 +4,9 @@ import React from "react";
 import { walletServices } from "@web-procider/walletServices";
 import { Commands, ErrorType, ProcessingType } from "../../command";
 import { provider } from "web3-core";
-
+/* DEFAULET is "REACT_APP_" */ 
+//ConnectProvides.APP_FRAMeWORK = "REACT_APP_"; 
+//"VUE_APP_"
 export function useConnectHook({
   // handleChainChanged,
   handleConnect,

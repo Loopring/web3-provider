@@ -5,6 +5,10 @@
   "private": false,
   "typings": "dist/index.d.ts",
   "module": "dist/web3-provider.esm.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/loopring-web"
+  },
+  "repository": "https://github.com/Loopring/web3-provider",
   "files": [
     "dist"
   ],
