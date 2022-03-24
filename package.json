@@ -1,6 +1,6 @@
 {
   "name": "@loopring-web/web3-provider",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "private": false,
   "typings": "dist/index.d.ts",
@@ -35,7 +35,7 @@
     "@walletconnect/client": "^1.6.0",
     "@walletconnect/qrcode-modal": "^1.6.0",
     "@walletconnect/web3-provider": "^1.6.0",
-    "rxjs-compat": "^6.6.7",
+    "rxjs": "^7.5.5",
     "web3": "^1.5.1"
   },
   "type": "module",
