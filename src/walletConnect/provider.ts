@@ -4,21 +4,23 @@ import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType, RPC_URLS } from "../command";
 import { IsMobile } from "../utilities";
 const POLLING_INTERVAL = 12000;
-
+const DEFAULT_BRIDGE = "https://bridge.walletconnect.org"
 export const WalletConnectProvide = async (props?: {
   account?: string;
   darkMode?: boolean;
 }): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
   try {
-    const BRIDGE_URL = await fetch("https://wcbridge.loopring.network/hello")
-      .then(({ status }) => {
-        return status === 200
-          ? process.env.REACT_APP_WALLET_CONNECT_BRIDGE
-          : "https://bridge.walletconnect.org";
-      })
-      .catch(() => {
-        return "https://bridge.walletconnect.org";
-      });
+     const BRIDGE_URL = (await fetch(process.env.WALLET_CONNECT_PING??'')
+        .then(({ status }) => {
+          return status === 200
+            ? process.env.WALLET_CONNECT_BRIDGE
+            : DEFAULT_BRIDGE;
+        })
+        .catch(() => {
+          return DEFAULT_BRIDGE;
+        }))??DEFAULT_BRIDGE
+
+
     // const BRIDGE_URL = "https://bridge.walletconnect.org";
 
     const provider: WalletConnectProvider = new WalletConnectProvider({
@@ -72,7 +74,7 @@ export const WalletConnectProvide = async (props?: {
 export const WalletConnectSubscribe = (
   provider: any,
   web3: Web3,
-  account?: string
+  _account?: string
 ) => {
   const { connector } = provider;
   if (provider && connector && connector.connected) {
@@ -192,8 +194,8 @@ export const WalletConnectUnsubscribe = async (provider: any) => {
 // const POLLING_INTERVAL = 12000
 //
 // const RPC_URLS: { [chainId: number]: string } = {
-//     1: process.env.REACT_APP_RPC_URL_1 as string,
-//     5: process.env.REACT_APP_RPC_URL_5 as string
+//     1: process.env.RPC_URL_1 as string,
+//     5: process.env.RPC_URL_5 as string
 // }
 //
 // myLog('RPC_URLS 1:', RPC_URLS[1])

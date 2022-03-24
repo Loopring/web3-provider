@@ -26,7 +26,7 @@ export const ExtensionSubscribe = (provider: any, web3: Web3) => {
         walletServices.sendDisconnect(-1, "disconnect for no account");
       }
     });
-    provider.on("chainChanged", (chainId: number) => {
+    provider.on("chainChanged", (_chainId: number) => {
       walletServices.sendConnect(web3, provider);
     });
     provider.on("disconnect", (code: number, reason: string) => {
@@ -51,6 +51,6 @@ export enum ConnectProviders {
   Coinbase = "Coinbase",
 }
 export const RPC_URLS: { [chainId: number]: string } = {
-  1: process.env.REACT_APP_RPC_URL_1 as string,
-  5: process.env.REACT_APP_RPC_URL_5 as string,
+  1: process.env.RPC_URL_1 as string,
+  5: process.env.RPC_URL_5 as string,
 };

@@ -1,12 +1,14 @@
-import { Subject } from "rxjs-compat";
 import Web3 from "web3";
 import { Commands, ErrorType, ProcessingType } from "./command";
 
+const { Subject } = require('rxjs');
+
 //TODO typeof account State
-const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
+const subject = new Subject();
 
 const AvaiableNetwork = [1, 5];
-export const walletServices = {subject,
+export const walletServices = {
+  subject,
     sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
     subject.next({
       status: Commands.Processing,
