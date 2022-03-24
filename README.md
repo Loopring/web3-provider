@@ -26,12 +26,23 @@ yarn install @loopring-web/web3-provider
  - Coinbase
  - Coming soon
 
+## 🪧Demo
+ - [Vue](https://codesandbox.io/s/vue-8nco78)
+ - [React](https://codesandbox.io/s/react-4v50ft)
 ## env.product
+ - React  .env.${DOMAIN}
 ```.env.product
-RPC_URL_1=https://mainnet.eth.loopring.network
-RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
-WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
-WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
+REACT_APP_RPC_URL_1=https://mainnet.eth.loopring.network
+REACT_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
+REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
+REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
+```
+ - Vue  .env.${DOMAIN}
+```.env.product
+VUE_APP_RPC_URL_1=https://mainnet.eth.loopring.network
+VUE_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
+VUE_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
+VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
 ```
 ```ts
  /*DEFAULET is "REACT_APP_" */ 
