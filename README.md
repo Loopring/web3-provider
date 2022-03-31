@@ -48,7 +48,6 @@ VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
  /*DEFAULET is "REACT_APP_" */ 
  ConnectProvides.APP_FRAMeWORK = "VUE_APP_";
 ```
-Demo for React hook
 
 ## 👉 [What is Loopring?](https://loopring.org/#/)
 
