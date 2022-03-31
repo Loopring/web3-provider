@@ -5,18 +5,20 @@ import {
 } from "./walletConnect";
 import { MetaMaskProvide } from "./metamask";
 import { CoinbaseProvide } from "./coinbase";
+
 import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
 import { ConnectProviders, ExtensionSubscribe, ExtensionUnsubscribe } from "./command";
 import { Web3Provider } from "@ethersproject/providers";
+
 export class ConnectProvides {
-  private static _APP_FRAMeWORK:string = "REACT_APP_";
-  public static get APP_FRAMeWORK () {
-    return  ConnectProvides._APP_FRAMeWORK
+  private static _APP_FRAMeWORK: string = "REACT_APP_";
+  public static get APP_FRAMeWORK() {
+    return ConnectProvides._APP_FRAMeWORK;
   }
-  public static set APP_FRAMeWORK (vaule:string) {
+  public static set APP_FRAMeWORK(vaule: string) {
     ConnectProvides._APP_FRAMeWORK = vaule;
   }
   private static _isMobile = false;
