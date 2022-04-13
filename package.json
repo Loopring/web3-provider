@@ -1,6 +1,6 @@
 {
   "name": "@loopring-web/web3-provider",
-  "version": "1.0.8-aplha.0",
+  "version": "1.0.9",
   "main": "dist/index.js",
   "private": false,
   "typings": "dist/index.d.ts",
