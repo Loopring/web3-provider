@@ -5,6 +5,7 @@ import {
 } from "./walletConnect";
 import { MetaMaskProvide } from "./metamask";
 import { CoinbaseProvide } from "./coinbase";
+import { GameStop } from "./gmeWallet";
 
 import { IpcProvider } from "web3-core";
 import Web3 from "web3";
@@ -60,6 +61,17 @@ export class ConnectProvides {
     this._provideName = ConnectProviders.Coinbase;
     this.clear();
     const obj = await CoinbaseProvide(props);
+    if (obj) {
+      this.usedProvide = obj.provider;
+      this.usedWeb3 = obj.web3;
+    }
+    this.subScribe();
+  };
+
+  public GameStop = async (props: { darkMode?: boolean }) => {
+    this._provideName = ConnectProviders.GameStop;
+    this.clear();
+    const obj = await GameStop(props);
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -124,6 +136,7 @@ export class ConnectProvides {
           break;
         case ConnectProviders.MetaMask:
         case ConnectProviders.Coinbase:
+        case ConnectProviders.GameStop:
           ExtensionSubscribe(this.usedProvide, this.usedWeb3 as Web3);
           break;
       }

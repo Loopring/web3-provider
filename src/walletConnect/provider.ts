@@ -22,7 +22,6 @@ export const WalletConnectProvide = async (props?: {
         .catch(() => {
           return DEFAULT_BRIDGE;
         }))??DEFAULT_BRIDGE
-
     console.log('WALLET_CONNECT_BRIDGE:',process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`])
 
     // const BRIDGE_URL = "https://bridge.walletconnect.org";
@@ -31,6 +30,7 @@ export const WalletConnectProvide = async (props?: {
       rpc: RPC_URLS,
       bridge: BRIDGE_URL,
       pollingInterval: POLLING_INTERVAL,
+      chainId:1,
       qrcode: !!IsMobile.any(),
     });
     const { connector } = provider;
