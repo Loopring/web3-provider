@@ -100,11 +100,12 @@ export class ConnectProvides {
           this.usedProvide as WalletConnectProvider
         ).connector.killSession();
       }
-      await WalletConnectUnsubscribe(this.usedProvide);
-      await ExtensionUnsubscribe(this.usedProvide);
-      // await CoinbaseUnsubscribe(this.usedProvide);
-      delete this.usedProvide;
-      delete this.usedWeb3;
+      if(this.usedProvide){
+        await WalletConnectUnsubscribe(this.usedProvide);
+        await ExtensionUnsubscribe(this.usedProvide);
+      }
+      this.usedProvide = undefined;
+      this.usedWeb3 = undefined;
     } catch (error) {
       console.log("clearProviderSubscribe", error);
     }
