@@ -1,6 +1,6 @@
 {
   "name": "@loopring-web/web3-provider",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "main": "dist/index.js",
   "private": false,
   "typings": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "prepublishOnly": "NODE_ENV=production tsdx build"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "^3.2.0",
+    "@coinbase/wallet-sdk": "^3.1.0",
     "@ethersproject/providers": "^5.6.1",
     "@metamask/detect-provider": "^1.2.0",
     "@reduxjs/toolkit": "^1.6.1",
