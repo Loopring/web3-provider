@@ -52,6 +52,14 @@ export enum ConnectProviders {
   Coinbase = "Coinbase",
   GameStop = "GameStop",
 }
+
+export enum ConnectProvidersSignMap {
+  Unknown = "Unknown",
+  MetaMask = "MetaMask",
+  WalletConnect = "WalletConnect",
+  Coinbase = "OtherExtension",
+  GameStop = "GameStop",
+}
 export const RPC_URLS: { [chainId: number]: string } = {
   1: process.env[`${ConnectProvides.APP_FRAMeWORK}RPC_URL_1`] as string,
   5: process.env[`${ConnectProvides.APP_FRAMeWORK}RPC_URL_5`] as string,
