@@ -34,15 +34,15 @@ yarn install @loopring-web/web3-provider
 ```.env.product
 REACT_APP_RPC_URL_1=https://mainnet.eth.loopring.network
 REACT_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
-REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
-REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
+REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
+REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
 ```
  - Vue  .env.${DOMAIN}
 ```.env.product
 VUE_APP_RPC_URL_1=https://mainnet.eth.loopring.network
 VUE_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
-VUE_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
-VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
+VUE_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
+VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
 ```
 ```ts
  /*DEFAULET is "REACT_APP_" */ 
