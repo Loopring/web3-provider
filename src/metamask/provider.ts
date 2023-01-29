@@ -4,7 +4,6 @@ import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType } from "../command";
 import { IsMobile } from "../utilities";
 import { Web3Provider } from "@ethersproject/providers";
-// import { ethers } from "ethers";
 
 export const MetaMaskProvide = async (
   _props?: any

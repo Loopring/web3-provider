@@ -1,7 +1,5 @@
 import {
   WalletConnectProvide,
-  WalletConnectSubscribe,
-  WalletConnectUnsubscribe,
 } from "./walletConnect";
 import { MetaMaskProvide } from "./metamask";
 import { CoinbaseProvide } from "./coinbase";
@@ -10,23 +8,34 @@ import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
-import { ConnectProviders, ExtensionSubscribe, ExtensionUnsubscribe } from "./command";
+import {
+  ConnectProviders,
+  ExtensionSubscribe,
+  ExtensionUnsubscribe,
+  WalletConnectSubscribe,
+  WalletConnectUnsubscribe
+} from "./command";
 import { Web3Provider } from "@ethersproject/providers";
+import { WalletConnectV2Provide } from './walletconnect2.0';
+import WalletConnectProviderV2 from '@walletconnect/ethereum-provider';
 
 export class ConnectProvides {
   private static _APP_FRAMeWORK: string = "REACT_APP_";
   public static get APP_FRAMeWORK() {
     return ConnectProvides._APP_FRAMeWORK;
   }
+
   public static set APP_FRAMeWORK(vaule: string) {
     ConnectProvides._APP_FRAMeWORK = vaule;
   }
+
   private static _isMobile = false;
   public usedProvide:
     | undefined
     | Web3Provider
     | IpcProvider
     | WalletConnectProvider
+    | WalletConnectProviderV2
     | CoinbaseWalletProvider;
   public usedWeb3: undefined | Web3;
 
@@ -84,6 +93,23 @@ export class ConnectProvides {
       throw e;
     }
   };
+  public WalletConnectV2Provide = async (props?: {
+    account?: string;
+    darkMode?: boolean;
+  }) => {
+    this._provideName = ConnectProviders.WalletConnectV2;
+    this.clear();
+    try {
+      const obj = await WalletConnectV2Provide(props);
+      if (obj) {
+        this.usedProvide = obj.provider;
+        this.usedWeb3 = obj.web3;
+      }
+      this.subScribe(props);
+    } catch (e) {
+      throw e;
+    }
+  };
 
   public clear = async () => {
     return await this.clearProviderSubscribe();
@@ -115,6 +141,7 @@ export class ConnectProvides {
   private subScribe = (props?: { account?: string }) => {
     try {
       switch (this._provideName) {
+        case ConnectProviders.WalletConnectV2:
         case ConnectProviders.WalletConnect:
           WalletConnectSubscribe(
             this.usedProvide,
