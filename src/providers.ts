@@ -16,7 +16,7 @@ import {
   WalletConnectUnsubscribe
 } from "./command";
 import { Web3Provider } from "@ethersproject/providers";
-import { WalletConnectV2Provide } from './walletconnect2.0';
+// import { WalletConnectV2Provide } from './walletconnect2.0';
 import WalletConnectProviderV2 from '@walletconnect/ethereum-provider';
 
 export class ConnectProvides {
@@ -93,23 +93,23 @@ export class ConnectProvides {
       throw e;
     }
   };
-  public WalletConnectV2Provide = async (props?: {
-    account?: string;
-    darkMode?: boolean;
-  }) => {
-    this._provideName = ConnectProviders.WalletConnectV2;
-    this.clear();
-    try {
-      const obj = await WalletConnectV2Provide(props);
-      if (obj) {
-        this.usedProvide = obj.provider;
-        this.usedWeb3 = obj.web3;
-      }
-      this.subScribe(props);
-    } catch (e) {
-      throw e;
-    }
-  };
+  // public WalletConnectV2Provide = async (props?: {
+  //   account?: string;
+  //   darkMode?: boolean;
+  // }) => {
+  //   this._provideName = ConnectProviders.WalletConnectV2;
+  //   this.clear();
+  //   try {
+  //     const obj = await WalletConnectV2Provide(props);
+  //     if (obj) {
+  //       this.usedProvide = obj.provider;
+  //       this.usedWeb3 = obj.web3;
+  //     }
+  //     this.subScribe(props);
+  //   } catch (e) {
+  //     throw e;
+  //   }
+  // };
 
   public clear = async () => {
     return await this.clearProviderSubscribe();
@@ -141,7 +141,7 @@ export class ConnectProvides {
   private subScribe = (props?: { account?: string }) => {
     try {
       switch (this._provideName) {
-        case ConnectProviders.WalletConnectV2:
+        // case ConnectProviders.WalletConnectV2:
         case ConnectProviders.WalletConnect:
           WalletConnectSubscribe(
             this.usedProvide,

@@ -95,7 +95,7 @@ export const WalletConnectV2Provide = async (props?: {
   } catch (error) {
     console.log("error happen at connect wallet with WalletConnectV2:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
-      connectName: ConnectProviders.WalletConnectV2,
+      connectName: 'WalletConnectV2',//ConnectProviders.WalletConnectV2,
       error: (error as any)?.message,
     });
   }
