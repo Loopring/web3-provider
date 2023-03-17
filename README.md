@@ -48,12 +48,23 @@ VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
 
 ```ts
  /*DEFAULET is "REACT_APP_" */
-ConnectProvides.APP_FRAMeWORK = "VUE_APP_";
+ConnectProvides.APP_FRAEWORK = "VUE_APP_";
 ```
+
+- Network extension
+
+```.env
+# ${APP_FRAEWORK}RPC_URL_OTHERS
+REACT_APP_RPC_URL_OTHERS=${NETWORK_ID1},${NETWORK_ID2}
+REACT_APP_RPC_URL_${NETWORK_ID1}=https://xxxx
+REACT_APP_RPC_URL_${NETWORK_ID2}=https://xxxx
+...
+``` 
 
 ## 👉 [What is Loopring?](https://loopring.org/#/)
 
 ## 🫂 Community
+
 - [Loopring Website](https://loopring.org/)
 - [Loopring Exchange](https://loopring.io/#/layer2)
 - [Loopring Reddit](https://www.reddit.com/r/loopringorg/)

@@ -117,13 +117,15 @@ export enum ConnectProviders {
 
 export let _RPC_URLS: { [ chainId: number ]: string } = {
   1: process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_1` ] as string,
-  5: process.env[`${ConnectProvides.APP_FRAMeWORK}RPC_URL_5`] as string,
+  5: process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_5` ] as string,
 };
-if(process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_OTHERS` ]){
-  const ids =process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_OTHERS` ]?.split(',')??[]
-  ids.forEach((item)=>{
-    _RPC_URLS[Number(item)] = process.env[`${ConnectProvides.APP_FRAMeWORK}RPC_URL_${item}`] as string;
+if (process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_OTHERS` ]) {
+  const ids = process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_OTHERS` ]?.split(',') ?? []
+  ids.forEach((item) => {
+    _RPC_URLS[ Number(item) ] = process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_${item}` ] as string;
   })
 }
 
-  export const RPC_URLS = _RPC_URLS
+export const RPC_URLS = _RPC_URLS
+export const AvaiableNetwork = Object.keys(RPC_URLS);
+
