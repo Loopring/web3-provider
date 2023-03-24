@@ -19,19 +19,17 @@ export const MetaMaskProvide = async (
     });
     const ethereum: any = window.ethereum;
 
-    if (!IsMobile.any() && provider.providers?.length) {
-      // provider?.providerMap
-      // provider =  provider?.providerMap?.get('MetaMask')??provider;
-      // ethereum =  window.ethereum.
-      provider.providers.forEach(async (p: any) => {
-        if (p.isMetaMask) provider = p;
-      });
-
+    if (!IsMobile.any() && provider?.providerMap) {
+      provider = provider?.providerMap?.get('MetaMask') ?? provider;
+      // provider.providers?.length
+      // provider.providers.forEach(async (p: any) => {
+      //   if (p.isMetaMask) provider = p;
+      // });
     }
-
 
     if (provider && ethereum) {
       const web3 = new Web3(provider as any);
+      provider.send
       await (provider ?? ethereum).request({method: "eth_requestAccounts"});
       walletServices.sendConnect(web3, provider);
       // @ts-ignore

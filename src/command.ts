@@ -42,6 +42,11 @@ export const ExtensionUnsubscribe = async (provider: any) => {
     // provider.removeAllListeners('chainChanged');
     // provider.removeAllListeners('disconnect');
     await provider.removeAllListeners();
+    try {
+      (provider?.close) ? provider?.close() : provider?.disable ? provider?.disable() : undefined;
+    } catch (error) {
+      throw error;
+    }
   }
 };
 
