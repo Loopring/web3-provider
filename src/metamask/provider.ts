@@ -21,10 +21,6 @@ export const MetaMaskProvide = async (
 
     if (!IsMobile.any() && provider?.providerMap) {
       provider = provider?.providerMap?.get('MetaMask') ?? provider;
-      // provider.providers?.length
-      // provider.providers.forEach(async (p: any) => {
-      //   if (p.isMetaMask) provider = p;
-      // });
     }
 
     if (provider && ethereum) {
