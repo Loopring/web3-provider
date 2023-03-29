@@ -32,26 +32,39 @@ yarn install @loopring-web/web3-provider
 ## env.product
  - React  .env.${DOMAIN}
 ```.env.product
-REACT_APP_RPC_URL_1=https://mainnet.eth.loopring.network
+REACT_APP_RPC_URL_1=https://mainnet.eth.loopring.io
 REACT_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
-REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
-REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
+REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
+REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
 ```
  - Vue  .env.${DOMAIN}
+
 ```.env.product
-VUE_APP_RPC_URL_1=https://mainnet.eth.loopring.network
+VUE_APP_RPC_URL_1=https://mainnet.eth.loopring.io
 VUE_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
-VUE_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.network
-VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.network/hello
+VUE_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
+VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
 ```
+
 ```ts
- /*DEFAULET is "REACT_APP_" */ 
- ConnectProvides.APP_FRAMeWORK = "VUE_APP_";
+ /*DEFAULET is "REACT_APP_" */
+ConnectProvides.APP_FRAEWORK = "VUE_APP_";
 ```
+
+- Network extension
+
+```.env
+# ${APP_FRAEWORK}RPC_URL_OTHERS
+REACT_APP_RPC_URL_OTHERS=${NETWORK_ID1},${NETWORK_ID2}
+REACT_APP_RPC_URL_${NETWORK_ID1}=https://xxxx
+REACT_APP_RPC_URL_${NETWORK_ID2}=https://xxxx
+...
+``` 
 
 ## 👉 [What is Loopring?](https://loopring.org/#/)
 
 ## 🫂 Community
+
 - [Loopring Website](https://loopring.org/)
 - [Loopring Exchange](https://loopring.io/#/layer2)
 - [Loopring Reddit](https://www.reddit.com/r/loopringorg/)

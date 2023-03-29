@@ -3,8 +3,7 @@ import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType } from "../command";
 import { IsMobile } from "../utilities";
-import { Web3Provider } from "@ethersproject/providers";
-// import { ethers } from "ethers";
+import { Provider, Web3Provider } from "@ethersproject/providers";
 
 export const MetaMaskProvide = async (
   _props?: any
@@ -15,18 +14,26 @@ export const MetaMaskProvide = async (
         `Global ethereum is not MetaMask, Please disable other Wallet Plugin`
       );
     }
-    let provider = await detectEthereumProvider({
+    let provider: any = await detectEthereumProvider({
       mustBeMetaMask: !IsMobile.any(),
     });
-
     const ethereum: any = window.ethereum;
+
+    if (!IsMobile.any() && provider?.providerMap) {
+      provider = provider?.providerMap?.get('MetaMask') ?? provider;
+      // provider.providers?.length
+      // provider.providers.forEach(async (p: any) => {
+      //   if (p.isMetaMask) provider = p;
+      // });
+    }
 
     if (provider && ethereum) {
       const web3 = new Web3(provider as any);
-      await ethereum.request({ method: "eth_requestAccounts" });
+      provider.send
+      await (provider ?? ethereum).request({method: "eth_requestAccounts"});
       walletServices.sendConnect(web3, provider);
       // @ts-ignore
-      return { provider, web3 };
+      return {provider, web3};
     } else {
       return undefined;
     }

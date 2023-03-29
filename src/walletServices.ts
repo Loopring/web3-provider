@@ -1,12 +1,11 @@
 import Web3 from "web3";
-import { Commands, ErrorType, ProcessingType } from "./command";
+import { Commands, ErrorType, ProcessingType, AvaiableNetwork } from "./command";
 
 const { Subject } = require('rxjs');
 
 //TODO typeof account State
 const subject = new Subject();
 
-const AvaiableNetwork = [1, 5];
 export const walletServices = {
   subject,
     sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
@@ -36,7 +35,7 @@ export const walletServices = {
           provider,
           accounts,
           chainId:
-            AvaiableNetwork.findIndex((i) => i == Number(chainId)) !== -1
+            AvaiableNetwork.findIndex((i) => Number(i) == Number(chainId)) !== -1
               ? Number(chainId)
               : "unknown",
         },
