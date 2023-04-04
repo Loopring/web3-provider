@@ -24,7 +24,7 @@ yarn install @loopring-web/web3-provider
  - Metamask
  - WallectConnet
  - Coinbase
- - Coming soon
+ - GameStop Wallet
 
 ## 🪧Demo
  - [Vue](https://codesandbox.io/s/vue-8nco78)
