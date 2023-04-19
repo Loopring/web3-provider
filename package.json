@@ -1,6 +1,6 @@
 {
   "name": "@loopring-web/web3-provider",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "dist/index.js",
   "private": false,
   "typings": "dist/index.d.ts",
@@ -33,9 +33,7 @@
     "@metamask/detect-provider": "^1.2.0",
     "@reduxjs/toolkit": "^1.6.1",
     "@walletconnect/client": "^1.7.8",
-    "@walletconnect/ethereum-provider": "^2.7.0",
-    "@walletconnect/qrcode-modal": "^1.7.8",
-    "@walletconnect/web3-provider": "^1.7.8",
+    "@walletconnect/universal-provider": "^2.7.0",
     "@web3modal/standalone": "^2.3.3",
     "ethers": "^5.7.2",
     "rxjs": "^7.5.5",
