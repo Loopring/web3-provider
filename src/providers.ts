@@ -1,13 +1,9 @@
-import {
-  WalletConnectProvide,
-} from "./walletConnect";
 import { MetaMaskProvide } from "./metamask";
 import { CoinbaseProvide } from "./coinbase";
 import { GameStop } from "./gmeWallet";
 
 import { IpcProvider } from "web3-core";
 import Web3 from "web3";
-import WalletConnectProvider from "@walletconnect/web3-provider";
 import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
 import {
   ConnectProviders,
@@ -17,8 +13,8 @@ import {
   WalletConnectUnsubscribe
 } from "./command";
 import { Web3Provider } from "@ethersproject/providers";
-// import { WalletConnectV2Provide } from './walletconnect2.0';
-import WalletConnectProviderV2 from '@walletconnect/ethereum-provider';
+import UniversalProvider from '@walletconnect/universal-provider';
+import { WalletConnectV2Provide } from './walletconnect2.0';
 
 export class ConnectProvides {
   private static _APP_FRAMeWORK: string = "REACT_APP_";
@@ -35,8 +31,7 @@ export class ConnectProvides {
     | undefined
     | Web3Provider
     | IpcProvider
-    | WalletConnectProvider
-    | WalletConnectProviderV2
+    | UniversalProvider
     | CoinbaseWalletProvider;
   public usedWeb3: undefined | Web3;
 
@@ -88,31 +83,14 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public WalletConnect = async (props?: {
-    account?: string;
-    darkMode?: boolean;
-  }) => {
-    this._provideName = ConnectProviders.WalletConnect;
-    this.clear();
-    try {
-      const obj = await WalletConnectProvide(props);
-      if (obj) {
-        this.usedProvide = obj.provider;
-        this.usedWeb3 = obj.web3;
-      }
-      this.subScribe(props);
-    } catch (e) {
-      throw e;
-    }
-  };
-  // public WalletConnectV2Provide = async (props?: {
+  // public WalletConnect = async (props?: {
   //   account?: string;
   //   darkMode?: boolean;
   // }) => {
-  //   this._provideName = ConnectProviders.WalletConnectV2;
+  //   this._provideName = ConnectProviders.WalletConnect;
   //   this.clear();
   //   try {
-  //     const obj = await WalletConnectV2Provide(props);
+  //     const obj = await WalletConnectProvide(props);
   //     if (obj) {
   //       this.usedProvide = obj.provider;
   //       this.usedWeb3 = obj.web3;
@@ -122,6 +100,23 @@ export class ConnectProvides {
   //     throw e;
   //   }
   // };
+  public WalletConnect = async (props?: {
+    account?: string;
+    darkMode?: boolean;
+  }) => {
+    this._provideName = ConnectProviders.WalletConnect;
+    this.clear();
+    try {
+      const obj = await WalletConnectV2Provide(props);
+      if (obj) {
+        this.usedProvide = obj.provider;
+        this.usedWeb3 = obj.web3;
+      }
+      this.subScribe(props);
+    } catch (e) {
+      throw e;
+    }
+  };
 
   public clear = async () => {
     return await this.clearProviderSubscribe();
@@ -129,15 +124,15 @@ export class ConnectProvides {
 
   private clearProviderSubscribe = async () => {
     try {
-      if (
-        this.usedProvide &&
-        typeof (this.usedProvide as WalletConnectProvider)?.connector
-          ?.killSession === "function"
-      ) {
-        await (
-          this.usedProvide as WalletConnectProvider
-        ).connector.killSession();
-      }
+      // if (
+      //   this.usedProvide &&
+      //   typeof (this.usedProvide as WalletConnectProvider)?.connector
+      //     ?.killSession === "function"
+      // ) {
+      //   await (
+      //     this.usedProvide as WalletConnectProvider
+      //   ).connector.killSession();
+      // }
       if(this.usedProvide){
         await WalletConnectUnsubscribe(this.usedProvide);
         await ExtensionUnsubscribe(this.usedProvide);

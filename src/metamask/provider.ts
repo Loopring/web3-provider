@@ -3,7 +3,7 @@ import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType } from "../command";
 import { IsMobile } from "../utilities";
-import { Provider, Web3Provider } from "@ethersproject/providers";
+import {  Web3Provider } from "@ethersproject/providers";
 
 export const MetaMaskProvide = async (
   _props?: any
