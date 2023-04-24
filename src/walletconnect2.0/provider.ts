@@ -1,133 +1,115 @@
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { Web3Modal } from '@web3modal/standalone';
-import { AvaiableNetwork, ErrorType, RPC_URLS } from '../command';
+import { AvaiableNetwork, ConnectProviders, ErrorType, RPC_URLS } from '../command';
 import { ConnectProvides } from '../providers';
 import UniversalProvider from '@walletconnect/universal-provider';
+import EthereumProvider from "@walletconnect/ethereum-provider"
 
 const POLLING_INTERVAL = 12000;
-const DEFAULT_BRIDGE = "https://bridge.walletconnect.org"
-const WALLET_CONNECT_20_ID = "e9f9b27388f7d9bdb5f9a9ee81a5ab8d";
+const DEFAULT_BRIDGE = "wss://bridge.walletconnect.org"
+const methods = [
+  "eth_accounts",
+  "eth_chainId",
+  "eth_call",
+  "eth_getBalance",
+  "eth_ecRecover",
+  "eth_signTypedData_v4",
+  "eth_signTransaction",
+  "eth_sendTransaction",
+  "eth_sendRawTransaction",
+  "eth_signTypedData",
+  "personal_sign",
+  "personal_ecRecover",
+  "eth_sign",
+];
+const events = ["chainChanged", "accountsChanged", "message", "disconnect", "connect"];
 
 export const WalletConnectV2Provide = async (props?: {
   account?: string;
   darkMode?: boolean;
-}): Promise<{ provider?: UniversalProvider; web3?: Web3 } | undefined> => {
+}): Promise<{ provider?: UniversalProvider | EthereumProvider; web3?: Web3 } | undefined> => {
   // let provider:any|UniversalProvider
   try {
-    console.log('WALLET_CONNECT_PING:', process.env[ `${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING` ])
-
-    const BRIDGE_URL = (await fetch(process.env[ `${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING` ] ?? '')
+    const web3Modal = ConnectProvides.getWeb3Modal();
+    web3Modal.setTheme({themeMode: !(props?.darkMode) ? 'light' : 'dark',})
+    console.log('WALLET_CONNECT_PING:', process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ])
+    const BRIDGE_URL = (await fetch(process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ] ?? '')
       .then(({status}) => {
         return status === 200
-          ? process.env[ `${ConnectProvides.APP_FRAMeWORK}CONNECT_WSS_BRIDGE` ]
+          ? process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_WSS_BRIDGE` ]
           : DEFAULT_BRIDGE;
       })
       .catch(() => {
         return DEFAULT_BRIDGE;
-      })) ?? DEFAULT_BRIDGE
-    console.log('WALLET_CONNECT_BRIDGE:', process.env[ `${ConnectProvides.APP_FRAMeWORK}CONNECT_WSS_BRIDGE` ])
-
-    // const { uri, approval } = await  signClient.connect({ requiredNamespaces: namespaces })
-
-    const web3Modal = new Web3Modal({
-      walletConnectVersion: 2,
-      projectId: WALLET_CONNECT_20_ID,
-      standaloneChains: ["eip155:1", "eip155:5"],
-      themeMode: !(props?.darkMode) ? 'light' : 'dark',
-      enableNetworkView: true
-    });
-    const clientMeta =  {
-      
+      })) ?? DEFAULT_BRIDGE;
+    const clientMeta = {
       description: 'Loopring Layer 2',
       url: "htts://loopring.io",
       icons: ["https://static.loopring.io/assets/svg/loopring.svg"],
       name: "Loopring",
-    }
-    // const provider = await EthereumProvider.init({
-    //   chains: AvaiableNetwork.map(item => Number(item)),//`eip155:${item}`),
-    //   projectId: WALLET_CONNECT_20_ID,
-    //   showQrModal:true, // REQUIRED set to "true" to use @web3modal/standalone,
-    //   rpcMap:RPC_URLS,
-    //   // relayUrl: BRIDGE_URL,
-    //   methods:[
-    //     JSONRPCMethod.eth_accounts,
-    //     JSONRPCMethod.eth_chainId,
-    //     'eth_getBalance',
-    //     'eth_call',
-    //     JSONRPCMethod.eth_ecRecover,
-    //     JSONRPCMethod.eth_signTypedData_v4,
-    //     JSONRPCMethod.eth_signTransaction,
-    //     JSONRPCMethod.eth_sendTransaction,
-    //     JSONRPCMethod.eth_sendRawTransaction,
-    //     JSONRPCMethod.eth_signTypedData,
-    //     JSONRPCMethod.personal_sign,
-    //     JSONRPCMethod.eth_sign,
-    //   ], // OPTIONAL ethereum methods
-    //   events: [...REQUIRED_EVENTS,...OPTIONAL_EVENTS],
-    //   metadata:clientMeta // OPTIONAL metadata of your app
-    // })
+    };
 
-    // const {connector} = provider;
 
-    const provider = await  UniversalProvider.init({
-      projectId: WALLET_CONNECT_20_ID,
-      relayUrl: BRIDGE_URL,
-      metadata:clientMeta, // OPTIONAL metadata of your app
-      // chains:[1,5], // REQUIRED chain ids
-      // showQrModal:true, // REQUIRED set to "true" to use @web3modal/standalone,
-      // methods, // OPTIONAL ethereum methods
-      // events, // OPTIONAL ethereum events
-      // rpcMap, // OPTIONAL rpc urls for each chain
-
-      // qrModalOptions // OPTIONAL - `undefined` by default, see https://docs.walletconnect.com/2.0/web3modal/options
-    });
-    await provider.connect({
-      namespaces: {
-        eip155: {
-          defaultChain:'1',
-          chains: AvaiableNetwork.map(item => `eip155:${item}`),
-          methods:[
-            "eth_accounts",
-            "eth_chainId",
-            "eth_call",
-            "eth_getBalance",
-            "eth_ecRecover",
-            "eth_signTypedData_v4",
-            "eth_signTransaction",
-            "eth_sendTransaction",
-            "eth_sendRawTransaction",
-            "eth_signTypedData",
-            "personal_sign",
-            "eth_sign",
-          ],
-          events: ["chainChanged", "accountsChanged","message", "disconnect", "connect"],
-          rpcMap:RPC_URLS,
-        },
-        // pairingTopic: "<123...topic>", // optional topic to connect to
-        // skipPairing: false, // optional to skip pairing ( later it can be resumed by invoking .pair())
+    const provider = await EthereumProvider.init({
+      chains: AvaiableNetwork.map(item => Number(item)),//`eip155:${item}`),
+      projectId: process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID` ] ?? "",
+      showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
+      rpcMap: RPC_URLS,
+      // relayUrl: BRIDGE_URL,
+      methods, // OPTIONAL ethereum methods
+      events,
+      metadata: clientMeta, // OPTIONAL metadata of your app
+      // @ts-ignore
+      qrModalOptions: {
+        themeMode: !(props?.darkMode) ? 'light' : 'dark'
       },
+      walletConnectVersion: 2
     });
 
-    // const provider = new ethers.providers.Web3Provider(_provider);
+    // const connector = provider;
     let web3: Web3 | undefined;
-    await provider.enable();
-    web3 = new Web3(provider as any);
-    walletServices.sendConnect(web3, provider);
 
+    if (!provider.session && props?.account === undefined) {
+      // await connector.session();
+      // const uri = connector.connected;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+      } else {
+        // walletServices.sendProcess("nextStep", { qrCodeUrl: uri });
+      }
+      await provider.enable();
+      web3 = new Web3(provider as any);
+      walletServices.sendConnect(web3, provider);
+    } else if (!provider.connected && props?.account !== undefined) {
+      console.log(
+        "WalletConnect reconnect connected is failed",
+        props.account,
+        provider
+      );
+      throw new Error("walletConnect not connect");
+    } else if (props?.account) {
+      console.log(
+        "WalletConnect reconnect connected is true",
+        props.account,
+        provider,
+        provider.session
+      );
+      await provider.enable();
+      web3 = new Web3(provider as any);
+      walletServices.sendConnect(web3, provider);
+    }
     return {provider, web3};
-
   } catch (error) {
-    console.log("error happen at connect wallet with WalletConnectV2:", error);
+    console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
-      connectName: 'WalletConnectV2',//ConnectProviders.WalletConnectV2,
+      connectName: ConnectProviders.WalletConnect,
       error: (error as any)?.message,
     });
   }
 };
-
+// const provider = new ethers.providers.Web3Provider(_provider);
 // export const WalletConnectVwSubscribe = (
-//   provider: any,
+//   provider: any,     ∂
 //   web3: Web3,
 //   _account?: string
 // ) => {
@@ -186,3 +168,53 @@ export const WalletConnectV2Provide = async (props?: {
 //   }
 // };
 
+
+// const client = await SignClient.init({
+//   projectId:process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`]??"",
+//   // optional parameters
+//   relayUrl: BRIDGE_URL,
+//   metadata:clientMeta,
+//   // methods,
+//   // events,
+// });
+
+
+//
+// const signClient = await SignClient.init({
+//   projectId:process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`]??"",
+//   // optional parameters
+//   relayUrl: BRIDGE_URL,
+//   metadata:clientMeta,
+//   // methods,
+//   // events,
+// });
+
+
+/*********** our bridge
+
+ const provider = await UniversalProvider.init({
+      projectId: process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`],
+      // relayUrl: BRIDGE_URL,
+      metadata:clientMeta,
+      name:'Loopring',
+    });
+
+ const signClient = provider.client;
+ const { uri, approval } = await signClient.connect({
+      requiredNamespaces: {
+        eip155: {
+          methods,
+          chains: AvaiableNetwork.map(item => `eip155:${item}`),
+          events,
+        }
+      }
+    })
+ if (uri) {
+      web3Modal.openModal({ uri, standaloneChains: ['eip155:1'] })
+      await approval()
+      web3Modal.closeModal()
+    }
+ await approval();
+ web3 = new Web3(provider as any);
+ walletServices.sendConnect(web3, provider);
+ */

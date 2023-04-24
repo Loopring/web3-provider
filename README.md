@@ -20,24 +20,33 @@
 // with yarn
 yarn install @loopring-web/web3-provider
 ```
-## 🛒 Support Provider 
- - Metamask
- - WallectConnet
- - Coinbase
- - GameStop Wallet
+
+## 🛒 Support Provider
+
+- Metamask
+- WallectConnet
+- Coinbase
+- GameStop Wallet
 
 ## 🪧Demo
- - [Vue](https://codesandbox.io/s/vue-8nco78)
- - [React](https://codesandbox.io/s/react-4v50ft)
-## env.product
- - React  .env.${DOMAIN}
+
+- [Vue](https://codesandbox.io/s/vue-8nco78)
+- [React](https://codesandbox.io/s/react-4v50ft)
+
+## Configuration
+
+### env.product
+
+- React .env.${DOMAIN}
+
 ```.env.product
 REACT_APP_RPC_URL_1=https://mainnet.eth.loopring.io
 REACT_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
 REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
 REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
 ```
- - Vue  .env.${DOMAIN}
+
+- Vue .env.${DOMAIN}
 
 ```.env.product
 VUE_APP_RPC_URL_1=https://mainnet.eth.loopring.io
@@ -60,6 +69,32 @@ REACT_APP_RPC_URL_${NETWORK_ID1}=https://xxxx
 REACT_APP_RPC_URL_${NETWORK_ID2}=https://xxxx
 ...
 ``` 
+
+## webpack
+
+```ts
+// babelLoader.include = [
+//     babelLoader.include,
+//     path.resolve(__dirname, "../../node_modules/@walletconnect"),
+//     path.resolve(__dirname, "../../node_modules/@web3modal"),
+// ];
+config.module.rules = [
+  ...
+    {
+      test: /\.(js|mjs|jsx|ts|tsx)$/,
+      include: [
+        ...
+          // add node_modules/@walletconnect and node_modules/@web3modal to babelLoader rules  
+          path.resolve(__dirname, "../../node_modules/@walletconnect"),
+        path.resolve(__dirname, "../../node_modules/@web3modal"),
+      ],
+      ...
+    },
+  ...
+]
+
+
+```
 
 ## 👉 [What is Loopring?](https://loopring.org/#/)
 

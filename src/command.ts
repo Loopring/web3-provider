@@ -1,6 +1,9 @@
 import Web3 from "web3";
 import { walletServices } from "./walletServices";
-import { ConnectProvides } from "./providers";
+import { connectProvides, ConnectProvides } from "./providers";
+import UniversalProvider from '@walletconnect/universal-provider';
+import EthereumProvider from '@walletconnect/ethereum-provider';
+import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
 
 export enum Commands {
   ConnectWallet = "ConnectWallet",
@@ -9,6 +12,7 @@ export enum Commands {
   Processing = "Processing",
   Error = "Error",
 }
+
 export enum ErrorType {
   FailedConnect = "FailedConnect",
 }
@@ -18,21 +22,26 @@ export enum ProcessingType {
   nextStep = "nextStep",
 }
 
+const onAccountChange = (accounts: Array<string>) => {
+  if (accounts.length && connectProvides.usedWeb3) {
+    walletServices.sendConnect(connectProvides.usedWeb3, connectProvides.usedProvide);
+  } else {
+    walletServices.sendDisconnect(-1, "disconnect for no account");
+  }
+}
+const onChainChanged = (_chainId: number) => {
+  if (connectProvides.usedWeb3) {
+    walletServices.sendConnect(connectProvides.usedWeb3, connectProvides.usedProvide);
+  }
+}
+const onDisconnect = (code: number, reason: string) => {
+  walletServices.sendDisconnect(code, reason);
+}
 export const ExtensionSubscribe = (provider: any, web3: Web3) => {
   if (provider) {
-    provider.on("accountsChanged", (accounts: Array<string>) => {
-      if (accounts.length) {
-        walletServices.sendConnect(web3, provider);
-      } else {
-        walletServices.sendDisconnect(-1, "disconnect for no account");
-      }
-    });
-    provider.on("chainChanged", (_chainId: number) => {
-      walletServices.sendConnect(web3, provider);
-    });
-    provider.on("disconnect", (code: number, reason: string) => {
-      walletServices.sendDisconnect(code, reason);
-    });
+    provider.on("accountsChanged", onAccountChange);
+    provider.on("chainChanged", onChainChanged);
+    provider.on("disconnect", onDisconnect);
   }
 };
 
@@ -50,63 +59,40 @@ export const ExtensionUnsubscribe = async (provider: any) => {
   }
 };
 
+const _onAccountChange = async (_chainId: any) => {
+  if (connectProvides.usedProvide && connectProvides.usedWeb3) {
+    const accounts = await connectProvides.usedWeb3.eth.getAccounts();
+    if (accounts.length && connectProvides.usedWeb3) {
+      walletServices.sendConnect(connectProvides.usedWeb3, connectProvides.usedProvide);
+    } else {
+      walletServices.sendDisconnect(-1, "disconnect for no account");
+    }
+  } else {
+    walletServices.sendDisconnect(-1, "disconnect for no account");
+  }
+}
 
 export const WalletConnectSubscribe = (
-  provider: any,
+  provider: EthereumProvider | UniversalProvider,
   web3: Web3,
   _account?: string
 ) => {
-  const {connector} = provider;
-  if (provider && connector && connector.connected) {
-    connector.on("connect", (error: Error | null, payload: any | null) => {
-      if (error) {
-        walletServices.sendError(ErrorType.FailedConnect, {
-          connectName: ConnectProviders.WalletConnect,
-          error,
-        });
-      }
-      const {accounts, chainId} = payload.params[ 0 ];
-      connector.approveSession({accounts, chainId});
-      //
-      // // const _accounts = await web3.eth.getAccounts();
-      // console.log('accounts:', accounts)
-      walletServices.sendConnect(web3, provider);
-    });
-    connector.on(
-      "session_update",
-      (error: Error | null, payload: any | null) => {
-        const {accounts, chainId} = payload.params[ 0 ];
-        if (error) {
-          walletServices.sendError(ErrorType.FailedConnect, {
-            connectName: ConnectProviders.WalletConnect,
-            error,
-          });
-        }
-        connector.updateSession({accounts, chainId});
-        walletServices.sendConnect(web3, provider);
-      }
-    );
-    connector.on("disconnect", (error: Error | null, payload: any | null) => {
-      const {message} = payload.params[ 0 ];
-      if (error) {
-        walletServices.sendError(ErrorType.FailedConnect, {
-          connectName: ConnectProviders.WalletConnect,
-          error,
-        });
-      }
-      walletServices.sendDisconnect("", message);
-      console.log("WalletConnect on disconnect");
-    });
+  if (provider) {
+    provider.on("connect", _onAccountChange);
+    provider.on("session_update", _onAccountChange)
+    provider.on("chainChanged", _onAccountChange);
+    provider.on("disconnect", onDisconnect);
   }
 };
 
-export const WalletConnectUnsubscribe = async (provider: any) => {
-  if (provider && provider.connector) {
-    const {connector} = provider;
+export const WalletConnectUnsubscribe = async (provider: EthereumProvider | UniversalProvider) => {
+  if (provider) {
+    // const {connector} = provider;
     console.log("WalletConnect on Unsubscribe");
-    connector.off("disconnect");
-    connector.off("connect");
-    connector.off("session_update");
+    provider.off("connect", _onAccountChange);
+    provider.off("session_update", _onAccountChange)
+    provider.off("chainChanged", _onAccountChange);
+    provider.off("disconnect", onDisconnect);
     return;
   }
 };
@@ -129,13 +115,13 @@ export enum ConnectProvidersSignMap {
 }
 
 export let _RPC_URLS: { [ chainId: number ]: string } = {
-  1: process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_1` ] as string,
-  5: process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_5` ] as string,
+  1: process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_1` ] as string,
+  5: process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_5` ] as string,
 };
-if (process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_OTHERS` ]) {
-  const ids = process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_OTHERS` ]?.split(',') ?? []
+if (process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_OTHERS` ]) {
+  const ids = process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_OTHERS` ]?.split(',') ?? []
   ids.forEach((item) => {
-    _RPC_URLS[ Number(item) ] = process.env[ `${ConnectProvides.APP_FRAMeWORK}RPC_URL_${item}` ] as string;
+    _RPC_URLS[ Number(item) ] = process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_${item}` ] as string;
   })
 }
 

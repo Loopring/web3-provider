@@ -18,6 +18,7 @@ import UniversalProvider from '@walletconnect/universal-provider';
 import { WalletConnectV2Provide } from './walletconnect2.0';
 import SignClient from '@walletconnect/sign-client';
 import { Web3Modal } from '@web3modal/standalone';
+import EthereumProvider from '@walletconnect/ethereum-provider';
 
 export class ConnectProvides {
   private static _APP_FRAMEWORK: string = "REACT_APP_";
@@ -32,9 +33,9 @@ export class ConnectProvides {
         standaloneChains: AvaiableNetwork.map(item => `eip155:${item}`),
         // themeMode: !(props?.darkMode) ? 'light' : 'dark',
         enableNetworkView: true,
-        themeVariables:{
-           "--w3m-z-index":1400,
-         }
+        themeVariables: {
+          '--w3m-z-index': "2400",
+        }
       });
     }
     return ConnectProvides._web3Modal
@@ -52,7 +53,8 @@ export class ConnectProvides {
     | Web3Provider
     | IpcProvider
     | UniversalProvider
-    | CoinbaseWalletProvider;
+    | CoinbaseWalletProvider
+    | EthereumProvider;
   public usedWeb3: undefined | Web3;
 
   private _provideName: string | undefined;
@@ -129,7 +131,7 @@ export class ConnectProvides {
     try {
       const obj = await WalletConnectV2Provide(props);
       if (obj) {
-        this.usedProvide = obj.provider;
+        this.usedProvide = obj.provider as any;
         this.usedWeb3 = obj.web3;
       }
       this.subScribe(props);
@@ -154,7 +156,7 @@ export class ConnectProvides {
       //   ).connector.killSession();
       // }
       if(this.usedProvide){
-        await WalletConnectUnsubscribe(this.usedProvide);
+        await WalletConnectUnsubscribe(this.usedProvide as UniversalProvider | EthereumProvider);
         await ExtensionUnsubscribe(this.usedProvide);
       }
       this.usedProvide = undefined;
@@ -172,7 +174,7 @@ export class ConnectProvides {
         // case ConnectProviders.WalletConnectV2:
         case ConnectProviders.WalletConnect:
           WalletConnectSubscribe(
-            this.usedProvide,
+            this.usedProvide as UniversalProvider | EthereumProvider,
             this.usedWeb3 as Web3,
             props?.account
           );
