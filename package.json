@@ -1,6 +1,6 @@
 {
   "name": "@loopring-web/web3-provider",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "main": "dist/index.js",
   "private": false,
   "typings": "dist/index.d.ts",
