@@ -13,8 +13,7 @@ import {
   WalletConnectSubscribe,
   WalletConnectUnsubscribe
 } from "./command";
-import { Web3Provider } from "@ethersproject/providers";
-import UniversalProvider from '@walletconnect/universal-provider';
+// import UniversalProvider from '@walletconnect/universal-provider';
 import { WalletConnectV2Provide } from './walletconnect2.0';
 import SignClient from '@walletconnect/sign-client';
 import { Web3Modal } from '@web3modal/standalone';
@@ -50,9 +49,8 @@ export class ConnectProvides {
   private static _isMobile = false;
   public usedProvide:
     | undefined
-    | Web3Provider
     | IpcProvider
-    | UniversalProvider
+    // | UniversalProvider
     | CoinbaseWalletProvider
     | EthereumProvider;
   public usedWeb3: undefined | Web3;
@@ -156,7 +154,7 @@ export class ConnectProvides {
       //   ).connector.killSession();
       // }
       if(this.usedProvide){
-        await WalletConnectUnsubscribe(this.usedProvide as UniversalProvider | EthereumProvider);
+        await WalletConnectUnsubscribe(this.usedProvide as EthereumProvider);
         await ExtensionUnsubscribe(this.usedProvide);
       }
       this.usedProvide = undefined;
@@ -174,7 +172,7 @@ export class ConnectProvides {
         // case ConnectProviders.WalletConnectV2:
         case ConnectProviders.WalletConnect:
           WalletConnectSubscribe(
-            this.usedProvide as UniversalProvider | EthereumProvider,
+            this.usedProvide as EthereumProvider,
             this.usedWeb3 as Web3,
             props?.account
           );
