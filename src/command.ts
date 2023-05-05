@@ -1,7 +1,9 @@
 import Web3 from "web3";
 import { walletServices } from "./walletServices";
 import { connectProvides, ConnectProvides } from "./providers";
+import UniversalProvider from '@walletconnect/universal-provider';
 import EthereumProvider from '@walletconnect/ethereum-provider';
+import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
 
 export enum Commands {
   ConnectWallet = "ConnectWallet",
@@ -33,30 +35,8 @@ const onChainChanged = (_chainId: number) => {
   }
 }
 const onDisconnect = (code: number, reason: string) => {
-  if (connectProvides.usedProvide && typeof (connectProvides.usedProvide as EthereumProvider)?.disconnect === 'function') {
-    (connectProvides.usedProvide as EthereumProvider).disconnect();
-  }
   walletServices.sendDisconnect(code, reason);
 }
-
-const onSessionError = async (id: number,
-                              topic: any) => {
-  if (connectProvides.usedProvide && typeof (connectProvides.usedProvide as EthereumProvider)?.disconnect === 'function') {
-    (connectProvides.usedProvide as EthereumProvider).disconnect();
-    walletServices.sendError(ErrorType.FailedConnect, {
-      connectName: ConnectProviders.WalletConnect,
-      error: 'Session/proposal expired with disconnect:' + id + topic?.toString()
-    });
-  } else {
-    walletServices.sendError(ErrorType.FailedConnect, {
-      connectName: ConnectProviders.WalletConnect,
-      error: 'Session/proposal expired no disconnect:' + id + topic?.toString()
-    });
-  }
-
-
-}
-
 export const ExtensionSubscribe = (provider: any, web3: Web3) => {
   if (provider) {
     provider.on("accountsChanged", onAccountChange);
@@ -85,7 +65,6 @@ const _onAccountChange = async (_chainId: any) => {
     if (accounts.length && connectProvides.usedWeb3) {
       walletServices.sendConnect(connectProvides.usedWeb3, connectProvides.usedProvide);
     } else {
-
       walletServices.sendDisconnect(-1, "disconnect for no account");
     }
   } else {
@@ -94,7 +73,7 @@ const _onAccountChange = async (_chainId: any) => {
 }
 
 export const WalletConnectSubscribe = (
-  provider: EthereumProvider,
+  provider: EthereumProvider | UniversalProvider,
   web3: Web3,
   _account?: string
 ) => {
@@ -102,38 +81,18 @@ export const WalletConnectSubscribe = (
     provider.on("connect", _onAccountChange);
     provider.on("session_update", _onAccountChange)
     provider.on("chainChanged", _onAccountChange);
-    // @ts-ignore
     provider.on("disconnect", onDisconnect);
-    // options
-    // @ts-ignore
-    provider.on("session_delete", onSessionError);
-    // @ts-ignore
-    provider.on("session_expire", onSessionError);
-    // @ts-ignore
-    provider.on("proposal_expire", onSessionError);
-    // provider.on('session_event', onSessionError)
-
-
   }
 };
 
-export const WalletConnectUnsubscribe = async (provider: EthereumProvider) => {
-  if (provider && typeof provider.off === 'function') {
+export const WalletConnectUnsubscribe = async (provider: EthereumProvider | UniversalProvider) => {
+  if (provider) {
     // const {connector} = provider;
     console.log("WalletConnect on Unsubscribe");
     provider.off("connect", _onAccountChange);
     provider.off("session_update", _onAccountChange)
     provider.off("chainChanged", _onAccountChange);
-    // @ts-ignore
     provider.off("disconnect", onDisconnect);
-    // options
-    // @ts-ignore
-    provider.off("session_delete", onSessionError);
-    // @ts-ignore
-    provider.off("session_expire", onSessionError);
-    // @ts-ignore
-    provider.off("proposal_expire", onSessionError);
-
     return;
   }
 };

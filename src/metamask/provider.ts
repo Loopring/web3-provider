@@ -3,11 +3,11 @@ import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType } from "../command";
 import { IsMobile } from "../utilities";
-import { IpcProvider } from "web3-core";
+import { Web3Provider } from "@ethersproject/providers";
 
 export const MetaMaskProvide = async (
   _props?: any
-): Promise<{ provider: IpcProvider; web3: Web3 } | undefined> => {
+): Promise<{ provider: Web3Provider; web3: Web3 } | undefined> => {
   try {
     if (!window.ethereum?.isMetaMask && !IsMobile.any()) {
       throw new Error(

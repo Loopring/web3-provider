@@ -4,7 +4,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "module": "es6",
-    "target": "es2020",
+    "target": "ES6",
     "lib": [
       "dom",
       "dom.iterable",

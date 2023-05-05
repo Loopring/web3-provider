@@ -13,7 +13,8 @@ import {
   WalletConnectSubscribe,
   WalletConnectUnsubscribe
 } from "./command";
-// import UniversalProvider from '@walletconnect/universal-provider';
+import { Web3Provider } from "@ethersproject/providers";
+import UniversalProvider from '@walletconnect/universal-provider';
 import { WalletConnectV2Provide } from './walletconnect2.0';
 import SignClient from '@walletconnect/sign-client';
 import { Web3Modal } from '@web3modal/standalone';
@@ -21,9 +22,9 @@ import EthereumProvider from '@walletconnect/ethereum-provider';
 
 export class ConnectProvides {
   private static _APP_FRAMEWORK: string = "REACT_APP_";
-  public static _web3Modal:Web3Modal|undefined
+  public static _web3Modal: Web3Modal | undefined
 
-  public static client:SignClient|undefined;
+  public static client: SignClient | undefined;
   public static getWeb3Modal() {
     if(!ConnectProvides._web3Modal){
       ConnectProvides._web3Modal = new Web3Modal({
@@ -49,8 +50,9 @@ export class ConnectProvides {
   private static _isMobile = false;
   public usedProvide:
     | undefined
+    | Web3Provider
     | IpcProvider
-    // | UniversalProvider
+    | UniversalProvider
     | CoinbaseWalletProvider
     | EthereumProvider;
   public usedWeb3: undefined | Web3;
@@ -154,7 +156,7 @@ export class ConnectProvides {
       //   ).connector.killSession();
       // }
       if(this.usedProvide){
-        await WalletConnectUnsubscribe(this.usedProvide as EthereumProvider);
+        await WalletConnectUnsubscribe(this.usedProvide as UniversalProvider | EthereumProvider);
         await ExtensionUnsubscribe(this.usedProvide);
       }
       this.usedProvide = undefined;
@@ -172,7 +174,7 @@ export class ConnectProvides {
         // case ConnectProviders.WalletConnectV2:
         case ConnectProviders.WalletConnect:
           WalletConnectSubscribe(
-            this.usedProvide as EthereumProvider,
+            this.usedProvide as UniversalProvider | EthereumProvider,
             this.usedWeb3 as Web3,
             props?.account
           );
