@@ -51,8 +51,8 @@ export const WalletConnectV2Provide = async (props?: {
 
 
     const provider = await EthereumProvider.init({
-      chains: [1],//`eip155:${item}`),
-      optionalChains: AvaiableNetwork.map(item => Number(item)),
+      chains: AvaiableNetwork.map(item => Number(item)),
+      // optionalChains: AvaiableNetwork.map(item => Number(item)),
       projectId: process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID` ] ?? "",
       showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
       rpcMap: RPC_URLS,
