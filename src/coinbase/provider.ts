@@ -2,15 +2,14 @@ import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType, RPC_URLS } from "../command";
 
-import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
-import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
+import CoinbaseWalletSDK, { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
+import { ConnectProvides } from '../providers';
+import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
 
 const APP_NAME = "Loopring App";
 const APP_LOGO_URL = `${"https://static.loopring.io/assets/"}/logo.png`;
 
-export const CoinbaseProvide = async (props?: {
-  darkMode?: boolean;
-}): Promise<{ provider: CoinbaseWalletProvider; web3: Web3 } | undefined> => {
+export const CoinbaseProvide = async (props: { darkMode?: boolean, chainId: ProviderChainId }): Promise<{ provider: CoinbaseWalletProvider; web3: Web3 } | undefined> => {
   try {
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: APP_NAME,
@@ -21,12 +20,38 @@ export const CoinbaseProvide = async (props?: {
       // supportedChainIds: [1, 5],
     });
     const provider: CoinbaseWalletProvider = coinbaseWallet.makeWeb3Provider(
-      RPC_URLS[1]
+      RPC_URLS[ 1 ]
     );
-    await provider.request({ method: "eth_requestAccounts" });
+    try {
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{chainId: props?.chainId ?? 1}],
+      });
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if ((switchError as any)?.code === 4902) {
+        try {
+          await provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: props?.chainId,
+                chainName: process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_CHAINNAME_${props.chainId}` ],
+                rpcUrls: [process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_${props.chainId}` ]] /* ... */,
+              },
+            ],
+          });
+        } catch (addError) {
+          throw  addError
+        }
+      } else {
+        throw  switchError
+      }
+    }
+    await provider.request({method: "eth_requestAccounts"});
     const web3 = new Web3(provider as any);
     walletServices.sendConnect(web3, provider);
-    return { provider, web3 };
+    return {provider, web3};
   } catch (error) {
     console.error("Error happen at connect wallet with Coinbase:", error);
     walletServices.sendError(ErrorType.FailedConnect, {

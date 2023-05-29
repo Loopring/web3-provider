@@ -19,6 +19,7 @@ import { WalletConnectV2Provide } from './walletconnect2.0';
 import SignClient from '@walletconnect/sign-client';
 import { Web3Modal } from '@web3modal/standalone';
 import EthereumProvider from '@walletconnect/ethereum-provider';
+import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
 
 export class ConnectProvides {
   private static _APP_FRAMEWORK: string = "REACT_APP_";
@@ -72,10 +73,10 @@ export class ConnectProvides {
   }
 
   // private provderObj:provider|undefined
-  public MetaMask = async (props: { darkMode?: boolean }) => {
+  public MetaMask = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
     this._provideName = ConnectProviders.MetaMask;
     this.clear();
-    const obj = await MetaMaskProvide(props);
+    const obj = await MetaMaskProvide({chainId, ...props});
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -83,10 +84,10 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public Coinbase = async (props: { darkMode?: boolean }) => {
+  public Coinbase = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
     this._provideName = ConnectProviders.Coinbase;
     this.clear();
-    const obj = await CoinbaseProvide(props);
+    const obj = await CoinbaseProvide({chainId, ...props});
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -94,7 +95,7 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public GameStop = async (props: { darkMode?: boolean }) => {
+  public GameStop = async ({...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
     this._provideName = ConnectProviders.GameStop;
     this.clear();
     const obj = await GameStop(props);
@@ -122,14 +123,11 @@ export class ConnectProvides {
   //     throw e;
   //   }
   // };
-  public WalletConnect = async (props?: {
-    account?: string;
-    darkMode?: boolean;
-  }) => {
+  public WalletConnect = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId } | any) => {
     this._provideName = ConnectProviders.WalletConnect;
     this.clear();
     try {
-      const obj = await WalletConnectV2Provide(props);
+      const obj = await WalletConnectV2Provide({chainId, ...props});
       if (obj) {
         this.usedProvide = obj.provider as any;
         this.usedWeb3 = obj.web3;
@@ -146,15 +144,6 @@ export class ConnectProvides {
 
   private clearProviderSubscribe = async () => {
     try {
-      // if (
-      //   this.usedProvide &&
-      //   typeof (this.usedProvide as WalletConnectProvider)?.connector
-      //     ?.killSession === "function"
-      // ) {
-      //   await (
-      //     this.usedProvide as WalletConnectProvider
-      //   ).connector.killSession();
-      // }
       if(this.usedProvide){
         await WalletConnectUnsubscribe(this.usedProvide as UniversalProvider | EthereumProvider);
         await ExtensionUnsubscribe(this.usedProvide);
