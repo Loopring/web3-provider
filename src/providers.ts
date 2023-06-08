@@ -9,7 +9,7 @@ import {
   AvaiableNetwork,
   ConnectProviders,
   ExtensionSubscribe,
-  ExtensionUnsubscribe,
+  ExtensionUnsubscribe, onChainChange,
   WalletConnectSubscribe,
   WalletConnectUnsubscribe
 } from "./command";
@@ -49,6 +49,7 @@ export class ConnectProvides {
   }
 
   private static _isMobile = false;
+  private darkMode: boolean = false;
   public usedProvide:
     | undefined
     | Web3Provider
@@ -75,6 +76,7 @@ export class ConnectProvides {
   // private provderObj:provider|undefined
   public MetaMask = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
     this._provideName = ConnectProviders.MetaMask;
+    this.darkMode = props.darkMode ?? false;
     this.clear();
     const obj = await MetaMaskProvide({chainId, ...props});
     if (obj) {
@@ -86,6 +88,7 @@ export class ConnectProvides {
 
   public Coinbase = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
     this._provideName = ConnectProviders.Coinbase;
+    this.darkMode = props.darkMode ?? false;
     this.clear();
     const obj = await CoinbaseProvide({chainId, ...props});
     if (obj) {
@@ -97,6 +100,7 @@ export class ConnectProvides {
 
   public GameStop = async ({...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
     this._provideName = ConnectProviders.GameStop;
+    this.darkMode = props.darkMode ?? false;
     this.clear();
     const obj = await GameStop(props);
     if (obj) {
@@ -125,6 +129,7 @@ export class ConnectProvides {
   // };
   public WalletConnect = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId } | any) => {
     this._provideName = ConnectProviders.WalletConnect;
+    this.darkMode = props.darkMode ?? false;
     this.clear();
     try {
       const obj = await WalletConnectV2Provide({chainId, ...props});
@@ -179,6 +184,26 @@ export class ConnectProvides {
     }
   };
 
+  public sendChainIdChange = async (chainId: number | string, darkMode = this.darkMode) => {
+    if (this.usedProvide && this.usedWeb3) {
+      switch (this.provideName) {
+        case ConnectProviders.MetaMask:
+        case ConnectProviders.GameStop:
+        case ConnectProviders.Coinbase:
+          await onChainChange(this.usedProvide, chainId);
+          break;
+        case ConnectProviders.WalletConnect:
+          this.clear();
+          await (this.usedProvide as EthereumProvider).disconnect();
+          this.WalletConnect({chainId, darkMode: this.darkMode})
+      }
+    }
+
+  }
+
+
 }
 
 export const connectProvides = new ConnectProvides();
+
+

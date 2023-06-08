@@ -20,6 +20,7 @@ export const walletServices = {
       data: { type: errorType, opts: errorObj },
     });
   },
+
   sendConnect: async (web3: Web3, provider: any) => {
     try {
       let accounts, chainId: number;

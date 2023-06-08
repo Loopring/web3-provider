@@ -50,7 +50,8 @@ export const WalletConnectV2Provide = async (props: {
       icons: ["https://static.loopring.io/assets/svg/loopring.svg"],
       name: "Loopring",
     };
-
+    //TODO test:
+    console.log('EthereumProvider init:', 'chainID', props.chainId)
 
     const provider = await EthereumProvider.init({
       chains: [Number(props.chainId ?? 1)],

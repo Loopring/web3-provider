@@ -3,7 +3,7 @@ import { walletServices } from "./walletServices";
 import { connectProvides, ConnectProvides } from "./providers";
 import UniversalProvider from '@walletconnect/universal-provider';
 import EthereumProvider from '@walletconnect/ethereum-provider';
-
+import { ethers } from 'ethers';
 export enum Commands {
   ConnectWallet = "ConnectWallet",
   DisConnect = "DisConnect",
@@ -21,6 +21,42 @@ export enum ProcessingType {
   nextStep = "nextStep",
 }
 
+export const onChainChange = async (provider: any, chainId: any = 1) => {
+  const chainIdHex = ethers.utils.hexValue(Number(chainId));
+  console.log('chainIdHex', chainIdHex)
+  try {
+    await provider?.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{
+        chainId: chainIdHex
+      }],
+    });
+  } catch (switchError) {
+    // This error code indicates that the chain has not been added to MetaMask.
+    // ethers
+
+    if ((switchError as any)?.code === 4902) {
+      try {
+        const [chainName,] = process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_CHAINNAME_${chainId}` ]?.split('|') ?? ['unknown', ''];
+        await provider.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: chainIdHex,
+              chainName,
+              rpcUrls: [process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_${chainId}` ]] /* ... */,
+            },
+          ],
+        });
+      } catch (addError) {
+        throw  addError
+      }
+    } else {
+      throw  switchError
+    }
+  }
+}
+
 const onAccountChange = (accounts: Array<string>) => {
   if (accounts.length && connectProvides.usedWeb3) {
     walletServices.sendConnect(connectProvides.usedWeb3, connectProvides.usedProvide);
@@ -35,7 +71,11 @@ const onChainChanged = () => {
 }
 const onDisconnect = ({code, reason, message}: any) => {
   console.log('onDisconnect', message)
-  walletServices.sendDisconnect(code, reason);
+  if ([1013].includes(code) && /Disconnected from chain/ig.test(message)) {
+    //do nothing
+  } else {
+    walletServices.sendDisconnect(code, reason);
+  }
 }
 export const ExtensionSubscribe = (provider: any, web3: Web3) => {
   if (provider) {
@@ -89,7 +129,7 @@ export const WalletConnectSubscribe = (
 };
 
 export const WalletConnectUnsubscribe = async (provider: EthereumProvider | UniversalProvider) => {
-  if (provider) {
+  if (provider && typeof provider.off == 'function') {
     // const {connector} = provider;
     console.log("WalletConnect on Unsubscribe");
     provider.off("connect", _onAccountChange);

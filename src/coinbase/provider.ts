@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { ConnectProviders, ErrorType, RPC_URLS } from "../command";
+import { ConnectProviders, ErrorType, onChainChange, RPC_URLS } from "../command";
 
 import CoinbaseWalletSDK, { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
 import { ConnectProvides } from '../providers';
@@ -22,32 +22,7 @@ export const CoinbaseProvide = async (props: { darkMode?: boolean, chainId: Prov
     const provider: CoinbaseWalletProvider = coinbaseWallet.makeWeb3Provider(
       RPC_URLS[ 1 ]
     );
-    try {
-      await provider.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{chainId: props?.chainId ?? 1}],
-      });
-    } catch (switchError) {
-      // This error code indicates that the chain has not been added to MetaMask.
-      if ((switchError as any)?.code === 4902) {
-        try {
-          await provider.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainId: props?.chainId,
-                chainName: process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_CHAINNAME_${props.chainId}` ],
-                rpcUrls: [process.env[ `${ConnectProvides.APP_FRAMEWORK}RPC_URL_${props.chainId}` ]] /* ... */,
-              },
-            ],
-          });
-        } catch (addError) {
-          throw  addError
-        }
-      } else {
-        throw  switchError
-      }
-    }
+    await onChainChange(provider, props.chainId);
     await provider.request({method: "eth_requestAccounts"});
     const web3 = new Web3(provider as any);
     walletServices.sendConnect(web3, provider);
