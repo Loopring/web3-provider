@@ -1,9 +1,7 @@
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType, onChainChange, RPC_URLS } from "../command";
-
 import CoinbaseWalletSDK, { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
-import { ConnectProvides } from '../providers';
 
 const APP_NAME = "Loopring App";
 const APP_LOGO_URL = `${"https://static.loopring.io/assets/"}/logo.png`;

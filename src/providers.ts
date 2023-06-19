@@ -99,23 +99,6 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  // public WalletConnect = async (props?: {
-  //   account?: string;
-  //   darkMode?: boolean;
-  // }) => {
-  //   this._provideName = ConnectProviders.WalletConnect;
-  //   this.clear();
-  //   try {
-  //     const obj = await WalletConnectProvide(props);
-  //     if (obj) {
-  //       this.usedProvide = obj.provider;
-  //       this.usedWeb3 = obj.web3;
-  //     }
-  //     this.subScribe(props);
-  //   } catch (e) {
-  //     throw e;
-  //   }
-  // };
   public WalletConnect = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: number | string } | any) => {
     this._provideName = ConnectProviders.WalletConnect;
     this.darkMode = props.darkMode ?? false;
@@ -154,7 +137,6 @@ export class ConnectProvides {
   private subScribe = (props?: { account?: string }) => {
     try {
       switch (this._provideName) {
-        // case ConnectProviders.WalletConnectV2:
         case ConnectProviders.WalletConnect:
           WalletConnectSubscribe(
             this.usedProvide as UniversalProvider | EthereumProvider,
@@ -162,7 +144,6 @@ export class ConnectProvides {
             props?.account
           );
           break;
-        // this._provideName = ConnectProviders.MetaMask;
         case ConnectProviders.Loopring:
         case ConnectProviders.MetaMask:
         case ConnectProviders.Coinbase:
@@ -189,10 +170,7 @@ export class ConnectProvides {
           this.WalletConnect({chainId, darkMode: this.darkMode})
       }
     }
-
   }
-
-
 }
 
 export const connectProvides = new ConnectProvides();
