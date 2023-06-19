@@ -6,7 +6,6 @@ import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
 import {
-  AvaiableNetwork,
   ConnectProviders,
   ExtensionSubscribe,
   ExtensionUnsubscribe, onChainChange,
@@ -17,33 +16,19 @@ import { Web3Provider } from "@ethersproject/providers";
 import UniversalProvider from '@walletconnect/universal-provider';
 import { WalletConnectV2Provide } from './walletconnect2.0';
 import SignClient from '@walletconnect/sign-client';
-import { Web3Modal } from '@web3modal/standalone';
 import EthereumProvider from '@walletconnect/ethereum-provider';
-import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
+import { myLog } from './utils';
+import { IsMobile } from './utilities';
 
 export class ConnectProvides {
   private static _APP_FRAMEWORK: string = "REACT_APP_";
-  public static _web3Modal: Web3Modal | undefined
 
   public static client: SignClient | undefined;
-  public static getWeb3Modal() {
-    if(!ConnectProvides._web3Modal){
-      ConnectProvides._web3Modal = new Web3Modal({
-        walletConnectVersion: 2,
-        projectId: process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`]??"",
-        standaloneChains: AvaiableNetwork.map(item => `eip155:${item}`),
-        // themeMode: !(props?.darkMode) ? 'light' : 'dark',
-        enableNetworkView: true,
-        themeVariables: {
-          '--w3m-z-index': "2400",
-        }
-      });
-    }
-    return ConnectProvides._web3Modal
- }
+
   public static get APP_FRAMEWORK() {
     return ConnectProvides._APP_FRAMEWORK;
   }
+
   public static set APP_FRAMEWORK(vaule: string) {
     ConnectProvides._APP_FRAMEWORK = vaule;
   }
@@ -74,8 +59,12 @@ export class ConnectProvides {
   }
 
   // private provderObj:provider|undefined
-  public MetaMask = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
-    this._provideName = ConnectProviders.MetaMask;
+  public MetaMask = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: number | string }) => {
+    if (IsMobile.any() && window?.ethereum?.isLoopring) {
+      this._provideName = ConnectProviders.Loopring;
+    } else {
+      this._provideName = ConnectProviders.MetaMask;
+    }
     this.darkMode = props.darkMode ?? false;
     this.clear();
     const obj = await MetaMaskProvide({chainId, ...props});
@@ -86,7 +75,7 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public Coinbase = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
+  public Coinbase = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: number | string }) => {
     this._provideName = ConnectProviders.Coinbase;
     this.darkMode = props.darkMode ?? false;
     this.clear();
@@ -98,7 +87,7 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public GameStop = async ({...props}: { darkMode?: boolean, chainId?: ProviderChainId }) => {
+  public GameStop = async ({...props}: { darkMode?: boolean, chainId?: number | string }) => {
     this._provideName = ConnectProviders.GameStop;
     this.darkMode = props.darkMode ?? false;
     this.clear();
@@ -127,7 +116,7 @@ export class ConnectProvides {
   //     throw e;
   //   }
   // };
-  public WalletConnect = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: ProviderChainId } | any) => {
+  public WalletConnect = async ({chainId = '1', ...props}: { darkMode?: boolean, chainId?: number | string } | any) => {
     this._provideName = ConnectProviders.WalletConnect;
     this.darkMode = props.darkMode ?? false;
     this.clear();
@@ -156,7 +145,7 @@ export class ConnectProvides {
       this.usedProvide = undefined;
       this.usedWeb3 = undefined;
     } catch (error) {
-      console.log("clearProviderSubscribe", error);
+      myLog("clearProviderSubscribe", error);
     }
 
     return;
@@ -173,6 +162,8 @@ export class ConnectProvides {
             props?.account
           );
           break;
+        // this._provideName = ConnectProviders.MetaMask;
+        case ConnectProviders.Loopring:
         case ConnectProviders.MetaMask:
         case ConnectProviders.Coinbase:
         case ConnectProviders.GameStop:
@@ -180,7 +171,7 @@ export class ConnectProvides {
           break;
       }
     } catch (error) {
-      console.log("subScribe", error);
+      myLog("subScribe", error);
     }
   };
 

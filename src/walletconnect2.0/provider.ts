@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { AvaiableNetwork, ConnectProviders, ErrorType, RPC_URLS } from '../command';
+import { AvaiableNetwork, ConnectProviders, ErrorType, onChainChange, RPC_URLS } from '../command';
 import { ConnectProvides } from '../providers';
 import UniversalProvider from '@walletconnect/universal-provider';
 import EthereumProvider from "@walletconnect/ethereum-provider"
@@ -32,18 +32,18 @@ export const WalletConnectV2Provide = async (props: {
 }): Promise<{ provider?: UniversalProvider | EthereumProvider; web3?: Web3 } | undefined> => {
   // let provider:any|UniversalProvider
   try {
-    const web3Modal = ConnectProvides.getWeb3Modal();
-    web3Modal.setTheme({themeMode: !(props?.darkMode) ? 'light' : 'dark',})
-    console.log('WALLET_CONNECT_PING:', process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ])
-    const BRIDGE_URL = (await fetch(process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ] ?? '')
-      .then(({status}) => {
-        return status === 200
-          ? process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_WSS_BRIDGE` ]
-          : DEFAULT_BRIDGE;
-      })
-      .catch(() => {
-        return DEFAULT_BRIDGE;
-      })) ?? DEFAULT_BRIDGE;
+    // const web3Modal = ConnectProvides.getWeb3Modal();
+    // web3Modal.setTheme({themeMode: !(props?.darkMode) ? 'light' : 'dark',})
+    // console.log('WALLET_CONNECT_PING:', process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ])
+    // const BRIDGE_URL = (await fetch(process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ] ?? '')
+    //   .then(({status}) => {
+    //     return status === 200
+    //       ? process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_WSS_BRIDGE` ]
+    //       : DEFAULT_BRIDGE;
+    //   })
+    //   .catch(() => {
+    //     return DEFAULT_BRIDGE;
+    //   })) ?? DEFAULT_BRIDGE;
     const clientMeta = {
       description: 'Loopring Layer 2',
       url: "htts://loopring.io",
@@ -51,7 +51,7 @@ export const WalletConnectV2Provide = async (props: {
       name: "Loopring",
     };
     //TODO test:
-    console.log('EthereumProvider init:', 'chainID', props.chainId)
+    // console.log('EthereumProvider init:', 'chainID', props.chainId)
 
     const provider = await EthereumProvider.init({
       chains: [Number(props.chainId ?? 1)],

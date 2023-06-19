@@ -21,15 +21,16 @@ export const walletServices = {
     });
   },
 
-  sendConnect: async (web3: Web3, provider: any) => {
+  sendConnect: async (web3: Web3, provider: any, accounts?: string[], chainId?: number) => {
     try {
-      let accounts, chainId: number;
+      // let accounts, chainId: number;
       //@ts-ignore
-      accounts = provider.accounts ?? (await web3.eth.getAccounts());
-      chainId =
-        typeof provider.chainId === "function"
-          ? await provider.chainId()
-          : provider.chainId ?? (await web3.eth.getChainId());
+      if (accounts && chainId) {
+
+      } else {
+        accounts = provider.accounts ?? (await web3.eth.getAccounts());
+        chainId = await web3.eth.getChainId();
+      }
       subject.next({
         status: "ConnectWallet",
         data: {

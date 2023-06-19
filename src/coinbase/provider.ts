@@ -4,12 +4,11 @@ import { ConnectProviders, ErrorType, onChainChange, RPC_URLS } from "../command
 
 import CoinbaseWalletSDK, { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
 import { ConnectProvides } from '../providers';
-import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
 
 const APP_NAME = "Loopring App";
 const APP_LOGO_URL = `${"https://static.loopring.io/assets/"}/logo.png`;
 
-export const CoinbaseProvide = async (props: { darkMode?: boolean, chainId: ProviderChainId }): Promise<{ provider: CoinbaseWalletProvider; web3: Web3 } | undefined> => {
+export const CoinbaseProvide = async (props: { darkMode?: boolean, chainId: number | string }): Promise<{ provider: CoinbaseWalletProvider; web3: Web3 } | undefined> => {
   try {
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: APP_NAME,

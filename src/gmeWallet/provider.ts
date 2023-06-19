@@ -16,9 +16,9 @@ export const GameStop = async ( _props?: any): Promise<
     }
     // @ts-ignore
     const provider = window.gamestop;
+    const web3 = new Web3(provider as any);
     await onChainChange(provider, _props.chainId);
     await (provider.send as Send)("eth_requestAccounts");
-    const web3 = new Web3(provider as any);
     walletServices.sendConnect(web3, provider);
     return {provider, web3};
   } catch (error) {

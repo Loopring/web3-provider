@@ -4,11 +4,10 @@ import { walletServices } from "../walletServices";
 import { ConnectProviders, ErrorType, onChainChange } from "../command";
 import { IsMobile } from "../utilities";
 import { Web3Provider } from "@ethersproject/providers";
-import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
 
 
 export const MetaMaskProvide = async (
-  _props: { darkMode?: boolean, chainId?: ProviderChainId }
+  _props: { darkMode?: boolean, chainId?: number | string }
 ): Promise<{ provider: Web3Provider; web3: Web3 } | undefined> => {
   try {
     // @ts-ignore
