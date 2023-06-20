@@ -23,6 +23,10 @@ export enum ProcessingType {
   nextStep = "nextStep",
 }
 
+export enum ProcessingStep {
+  showQrocde
+}
+
 export const onChainChange = async (provider: any, chainId: any = 1) => {
   const chainIdHex = ethers.utils.hexValue(Number(chainId));
   myLog('chainIdHex', chainIdHex)

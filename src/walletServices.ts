@@ -8,10 +8,10 @@ const subject = new Subject();
 
 export const walletServices = {
   subject,
-    sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
+  sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
     subject.next({
       status: Commands.Processing,
-      data: { type: type, opts: props },
+      data: {type: type, opts: props},
     });
   },
   sendError: async (errorType: keyof typeof ErrorType, errorObj: any) => {

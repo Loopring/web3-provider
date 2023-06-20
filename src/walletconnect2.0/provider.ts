@@ -1,10 +1,17 @@
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { AvaiableNetwork, ConnectProviders, ErrorType, onChainChange, RPC_URLS } from '../command';
+import {
+  AvaiableNetwork,
+  ConnectProviders,
+  ErrorType,
+  onChainChange,
+  ProcessingStep,
+  ProcessingType,
+  RPC_URLS
+} from '../command';
 import { ConnectProvides } from '../providers';
 import UniversalProvider from '@walletconnect/universal-provider';
 import EthereumProvider from "@walletconnect/ethereum-provider"
-import { ProviderChainId } from '@walletconnect/ethereum-provider/dist/types/types';
 
 const POLLING_INTERVAL = 12000;
 const DEFAULT_BRIDGE = "wss://bridge.walletconnect.org"
@@ -24,9 +31,10 @@ const methods = [
   "eth_sign",
 ];
 const events = ["chainChanged", "accountsChanged", "message", "disconnect", "connect"];
+let ethereumProvider: any = undefined;
 
 export const WalletConnectV2Provide = async (props: {
-  chainId: ProviderChainId;
+  chainId: number;
   account?: string;
   darkMode?: boolean;
 }): Promise<{ provider?: UniversalProvider | EthereumProvider; web3?: Web3 } | undefined> => {
@@ -52,44 +60,53 @@ export const WalletConnectV2Provide = async (props: {
     };
     //TODO test:
     // console.log('EthereumProvider init:', 'chainID', props.chainId)
-
-    const provider = await EthereumProvider.init({
-      chains: [Number(props.chainId ?? 1)],
-      optionalChains: AvaiableNetwork.map(item => Number(item)),
-      projectId: process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID` ] ?? "",
-      showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
-      rpcMap: RPC_URLS,
-      // relayUrl: BRIDGE_URL,
-      methods, // OPTIONAL ethereum methods
-      events,
-      metadata: clientMeta, // OPTIONAL metadata of your app
-      // @ts-ignore
-      qrModalOptions: {
+    if (ethereumProvider && ethereumProvider?.modal) {
+      ethereumProvider.modal.setTheme({
         themeMode: !(props?.darkMode) ? 'light' : 'dark'
-      },
-    });
+      })
+      await onChainChange(ethereumProvider, props.chainId);
+    } else {
+      ethereumProvider = await EthereumProvider.init({
+        chains: [Number(props.chainId ?? 1)],
+        optionalChains: AvaiableNetwork.map(item => Number(item)),
+        projectId: process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID` ] ?? "",
+        showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
+        rpcMap: RPC_URLS,
+        // relayUrl: BRIDGE_URL,
+        methods, // OPTIONAL ethereum methods
+        events,
+        metadata: clientMeta, // OPTIONAL metadata of your app
+        // @ts-ignore
+        qrModalOptions: {
+          themeMode: !(props?.darkMode) ? 'light' : 'dark'
+        },
+      });
+
+    }
+
 
     // const connector = provider;
     let web3: Web3 | undefined;
 
-    if (!provider.connected && props?.account !== undefined) {
+    if (!ethereumProvider.connected && props?.account !== undefined) {
       throw new Error("walletConnect not connect");
-    } else if ((!provider.session && props?.account === undefined) || props?.account) {
+    } else if ((!ethereumProvider.session && props?.account === undefined) || props?.account) {
     } else {
       console.log(
         "WalletConnect disconnect then connected is failed",
       );
-      await provider.disconnect()
+      await ethereumProvider.disconnect()
     }
-    await provider.enable();
-    web3 = new Web3(provider as any);
-    walletServices.sendConnect(web3, provider);
-    return {provider, web3};
+    walletServices.sendProcess(ProcessingType.nextStep, {step: ProcessingStep.showQrocde});
+    await ethereumProvider.enable();
+    web3 = new Web3(ethereumProvider as any);
+    walletServices.sendConnect(web3, ethereumProvider);
+    return {provider: ethereumProvider, web3};
   } catch (error) {
     console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.WalletConnect,
-      error: (error as any)?.message,
+      error: (error as any)?.message ?? error,
     });
   }
 };
