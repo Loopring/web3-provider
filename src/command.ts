@@ -24,7 +24,7 @@ export enum ProcessingType {
 }
 
 export enum ProcessingStep {
-  showQrocde
+  showQrcode
 }
 
 export const onChainChange = async (provider: any, chainId: any = 1) => {

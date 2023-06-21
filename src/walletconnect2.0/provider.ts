@@ -58,13 +58,16 @@ export const WalletConnectV2Provide = async (props: {
       icons: ["https://static.loopring.io/assets/svg/loopring.svg"],
       name: "Loopring",
     };
-    //TODO test:
+    // TODO test:
     // console.log('EthereumProvider init:', 'chainID', props.chainId)
     if (ethereumProvider && ethereumProvider?.modal) {
       ethereumProvider.modal.setTheme({
-        themeMode: !(props?.darkMode) ? 'light' : 'dark'
+        themeMode: !(props?.darkMode) ? 'light' : 'dark',
+        themeVariables: {
+          '--w3m-z-index': "9999",
+        },
       })
-      await onChainChange(ethereumProvider, props.chainId);
+      ethereumProvider.setChainIds([Number(props.chainId ?? 1)])
     } else {
       ethereumProvider = await EthereumProvider.init({
         chains: [Number(props.chainId ?? 1)],
@@ -78,9 +81,15 @@ export const WalletConnectV2Provide = async (props: {
         metadata: clientMeta, // OPTIONAL metadata of your app
         // @ts-ignore
         qrModalOptions: {
+          themeVariables: {
+            '--w3m-z-index': "9999",
+          },
           themeMode: !(props?.darkMode) ? 'light' : 'dark'
         },
       });
+      ethereumProvider.on('display_uri', (display_uri: string) => {
+        walletServices.sendProcess(ProcessingType.nextStep, {step: ProcessingStep.showQrcode, QRcode: display_uri});
+      })
 
     }
 
@@ -97,8 +106,10 @@ export const WalletConnectV2Provide = async (props: {
       );
       await ethereumProvider.disconnect()
     }
-    walletServices.sendProcess(ProcessingType.nextStep, {step: ProcessingStep.showQrocde});
+
+
     await ethereumProvider.enable();
+    await onChainChange(ethereumProvider, props.chainId);
     web3 = new Web3(ethereumProvider as any);
     walletServices.sendConnect(web3, ethereumProvider);
     return {provider: ethereumProvider, web3};
