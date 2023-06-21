@@ -19,6 +19,7 @@ import SignClient from '@walletconnect/sign-client';
 import EthereumProvider from '@walletconnect/ethereum-provider';
 import { myLog } from './utils';
 import { IsMobile } from './utilities';
+import { WalletConnectProvide } from './walletConnect/provider';
 
 export class ConnectProvides {
   private static _APP_FRAMEWORK: string = "REACT_APP_";
@@ -85,6 +86,23 @@ export class ConnectProvides {
       this.usedWeb3 = obj.web3;
     }
     this.subScribe();
+  };
+  public WalletConnectV1 = async (props?: {
+    account?: string;
+    darkMode?: boolean;
+  }) => {
+    this._provideName = ConnectProviders.WalletConnect;
+    this.clear();
+    try {
+      const obj = await WalletConnectProvide(props);
+      if (obj) {
+        this.usedProvide = obj.provider as any;
+        this.usedWeb3 = obj.web3;
+      }
+      this.subScribe(props);
+    } catch (e) {
+      throw e;
+    }
   };
 
   public GameStop = async ({...props}: { darkMode?: boolean, chainId?: number | string }) => {

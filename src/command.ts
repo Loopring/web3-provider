@@ -150,6 +150,7 @@ export enum ConnectProviders {
   Unknown = "Unknown",
   MetaMask = "MetaMask",
   WalletConnect = "WalletConnect",
+  WalletConnectV1 = "WalletConnect",
   // WalletConnectV2 = "WalletConnectV2",
   Coinbase = "Coinbase",
   GameStop = "GameStop",

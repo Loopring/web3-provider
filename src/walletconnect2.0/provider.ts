@@ -88,7 +88,7 @@ export const WalletConnectV2Provide = async (props: {
         },
       });
       ethereumProvider.on('display_uri', (display_uri: string) => {
-        walletServices.sendProcess(ProcessingType.nextStep, {step: ProcessingStep.showQrcode, QRcode: display_uri});
+        walletServices.sendProcess(ProcessingType.nextStep, {step: ProcessingStep.showQrcode, qrCodeUrl: display_uri});
       })
 
     }
