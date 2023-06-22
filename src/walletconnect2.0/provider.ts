@@ -12,6 +12,7 @@ import {
 import { ConnectProvides } from '../providers';
 import UniversalProvider from '@walletconnect/universal-provider';
 import EthereumProvider from "@walletconnect/ethereum-provider"
+import { ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 
 const POLLING_INTERVAL = 12000;
 const DEFAULT_BRIDGE = "wss://bridge.walletconnect.org"
@@ -32,7 +33,7 @@ const methods = [
 ];
 const events = ["chainChanged", "accountsChanged", "message", "disconnect", "connect"];
 let ethereumProvider: any = undefined;
-
+const NameSpace = 'eip155:';
 export const WalletConnectV2Provide = async (props: {
   chainId: number;
   account?: string;
@@ -61,13 +62,24 @@ export const WalletConnectV2Provide = async (props: {
     // TODO test:
     // console.log('EthereumProvider init:', 'chainID', props.chainId)
     if (ethereumProvider && ethereumProvider?.modal) {
+
       ethereumProvider.modal.setTheme({
         themeMode: !(props?.darkMode) ? 'light' : 'dark',
         themeVariables: {
           '--w3m-z-index': "9999",
         },
+      });
+      ethereumProvider.reset();
+      ConfigCtrl.setConfig({
+        walletConnectVersion: 2,
+        projectId: ethereumProvider.rpc.projectId,
+        standaloneChains: [ethereumProvider.formatChainId(Number(props.chainId ?? 1))],
+        defaultChain: Number(props.chainId ?? 1),
+        ...ethereumProvider.rpc.qrModalOptions
       })
-      ethereumProvider.setChainIds([Number(props.chainId ?? 1)])
+      console.log('modal', ethereumProvider.modal, ethereumProvider.modal.url);
+      ethereumProvider.setChainIds([ethereumProvider.formatChainId(Number(props.chainId ?? 1))]);
+      console.log('chain', ethereumProvider.chainId);
     } else {
       ethereumProvider = await EthereumProvider.init({
         chains: [Number(props.chainId ?? 1)],
@@ -100,15 +112,18 @@ export const WalletConnectV2Provide = async (props: {
     if (!ethereumProvider.connected && props?.account !== undefined) {
       throw new Error("walletConnect not connect");
     } else if ((!ethereumProvider.session && props?.account === undefined) || props?.account) {
+
     } else {
       console.log(
         "WalletConnect disconnect then connected is failed",
       );
       await ethereumProvider.disconnect()
     }
-
-
+    console.log(
+      "WalletConnect disconnect then connected is failed", ethereumProvider
+    );
     await ethereumProvider.enable();
+
     await onChainChange(ethereumProvider, props.chainId);
     web3 = new Web3(ethereumProvider as any);
     walletServices.sendConnect(web3, ethereumProvider);
@@ -121,3 +136,114 @@ export const WalletConnectV2Provide = async (props: {
     });
   }
 };
+// const provider = new ethers.providers.Web3Provider(_provider);
+// export const WalletConnectVwSubscribe = (
+//   provider: any,     ∂
+//   web3: Web3,
+//   _account?: string
+// ) => {
+//   const { connector } = provider;
+//   if (provider && connector && connector.connected) {
+//     connector.on("connect", (error: Error | null, payload: any | null) => {
+//       if (error) {
+//         walletServices.sendError(ErrorType.FailedConnect, {
+//           connectName: ConnectProviders.WalletConnectV2,
+//           error,
+//         });
+//       }
+//       const { accounts, chainId } = payload.params[0];
+//       connector.approveSession({ accounts, chainId });
+//       //
+//       // // const _accounts = await web3.eth.getAccounts();
+//       // console.log('accounts:', accounts)
+//       walletServices.sendConnect(web3, provider);
+//     });
+//     connector.on(
+//       "session_update",
+//       (error: Error | null, payload: any | null) => {
+//         const { accounts, chainId } = payload.params[0];
+//         if (error) {
+//           walletServices.sendError(ErrorType.FailedConnect, {
+//             connectName: ConnectProviders.WalletConnectV2,
+//             error,
+//           });
+//         }
+//         connector.updateSession({ accounts, chainId });
+//         walletServices.sendConnect(web3, provider);
+//       }
+//     );
+//     connector.on("disconnect", (error: Error | null, payload: any | null) => {
+//       const { message } = payload.params[0];
+//       if (error) {
+//         walletServices.sendError(ErrorType.FailedConnect, {
+//           connectName: ConnectProviders.WalletConnectV2,
+//           error,
+//         });
+//       }
+//       walletServices.sendDisconnect("", message);
+//       console.log("WalletConnectV2 on disconnect");
+//     });
+//   }
+// };
+//
+// export const WalletConnectUnsubscribe = async (provider: any) => {
+//   if (provider && provider.connector) {
+//     const { connector } = provider;
+//     console.log("WalletConnectV2 on Unsubscribe");
+//     connector.off("disconnect");
+//     connector.off("connect");
+//     connector.off("session_update");
+//     return;
+//   }
+// };
+
+
+// const client = await SignClient.init({
+//   projectId:process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`]??"",
+//   // optional parameters
+//   relayUrl: BRIDGE_URL,
+//   metadata:clientMeta,
+//   // methods,
+//   // events,
+// });
+
+
+//
+// const signClient = await SignClient.init({
+//   projectId:process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`]??"",
+//   // optional parameters
+//   relayUrl: BRIDGE_URL,
+//   metadata:clientMeta,
+//   // methods,
+//   // events,
+// });
+
+
+/*********** our bridge
+
+ const provider = await UniversalProvider.init({
+      projectId: process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`],
+      // relayUrl: BRIDGE_URL,
+      metadata:clientMeta,
+      name:'Loopring',
+    });
+
+ const signClient = provider.client;
+ const { uri, approval } = await signClient.connect({
+      requiredNamespaces: {
+        eip155: {
+          methods,
+          chains: AvaiableNetwork.map(item => `eip155:${item}`),
+          events,
+        }
+      }
+    })
+ if (uri) {
+      web3Modal.openModal({ uri, standaloneChains: ['eip155:1'] })
+      await approval()
+      web3Modal.closeModal()
+    }
+ await approval();
+ web3 = new Web3(provider as any);
+ walletServices.sendConnect(web3, provider);
+ */
