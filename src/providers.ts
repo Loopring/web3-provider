@@ -8,7 +8,8 @@ import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
 import {
   ConnectProviders,
   ExtensionSubscribe,
-  ExtensionUnsubscribe, onChainChange,
+  ExtensionUnsubscribe,
+  onChainChange,
   WalletConnectSubscribe,
   WalletConnectUnsubscribe
 } from "./command";

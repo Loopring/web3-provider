@@ -19,8 +19,19 @@ export const CoinbaseProvide = async (props: { darkMode?: boolean, chainId: numb
     const provider: CoinbaseWalletProvider = coinbaseWallet.makeWeb3Provider(
       RPC_URLS[ 1 ]
     );
-    await onChainChange(provider, props.chainId);
     await provider.request({method: "eth_requestAccounts"});
+    try {
+      await onChainChange(provider, props.chainId);
+    } catch (error) {
+      console.log('wallet switch Ethereum Chain is not allowed');
+      walletServices.sendError(ErrorType.FailedConnect, {
+        connectName: ConnectProviders.Coinbase,
+        error: {
+          code: 700202,
+          message: (error as any).message,
+        },
+      });
+    }
     const web3 = new Web3(provider as any);
     walletServices.sendConnect(web3, provider);
     return {provider, web3};

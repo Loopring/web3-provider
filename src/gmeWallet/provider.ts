@@ -3,7 +3,6 @@ import { walletServices } from "../walletServices";
 import { IpcProvider } from "web3-core";
 import { ConnectProviders, ErrorType, onChainChange } from "../command";
 import { Send } from '../interface';
-import { ConnectProvides } from '../providers';
 
 
 export const GameStop = async ( _props?: any): Promise<
@@ -17,8 +16,19 @@ export const GameStop = async ( _props?: any): Promise<
     // @ts-ignore
     const provider = window.gamestop;
     const web3 = new Web3(provider as any);
-    await onChainChange(provider, _props.chainId);
     await (provider.send as Send)("eth_requestAccounts");
+    try {
+      await onChainChange(provider, _props.chainId);
+    } catch (error) {
+      console.log('wallet switch Ethereum Chain is not allowed');
+      walletServices.sendError(ErrorType.FailedConnect, {
+        connectName: ConnectProviders.GameStop,
+        error: {
+          code: 700202,
+          message: (error as any).message,
+        },
+      });
+    }
     walletServices.sendConnect(web3, provider);
     return {provider, web3};
   } catch (error) {

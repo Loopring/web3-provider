@@ -135,4 +135,11 @@ config.module.rules = [
 - [Protocol Audit](https://loopring.org/resources/loopring1.0_audit.pdf)
 
 ## Release Process
+
 alpha.loopring.io, beta.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.
+
+## Error Code
+
+700002: Global ethereum is not Coinbase, Please disable other Wallet Plugin 700003: Unknown 700004: User not installed
+GameStop extension 700202: wallet switch Ethereum Chain is not allowed 700201: user manually closed walletConnect modal,
+Connection request reset. Please try again 

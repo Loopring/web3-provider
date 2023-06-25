@@ -12,10 +12,8 @@ import {
 import { ConnectProvides } from '../providers';
 import UniversalProvider from '@walletconnect/universal-provider';
 import EthereumProvider from "@walletconnect/ethereum-provider"
-import { ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
+import { myLog } from '../utils';
 
-const POLLING_INTERVAL = 12000;
-const DEFAULT_BRIDGE = "wss://bridge.walletconnect.org"
 const methods = [
   "eth_accounts",
   "eth_chainId",
@@ -39,20 +37,7 @@ export const WalletConnectV2Provide = async (props: {
   account?: string;
   darkMode?: boolean;
 }): Promise<{ provider?: UniversalProvider | EthereumProvider; web3?: Web3 } | undefined> => {
-  // let provider:any|UniversalProvider
   try {
-    // const web3Modal = ConnectProvides.getWeb3Modal();
-    // web3Modal.setTheme({themeMode: !(props?.darkMode) ? 'light' : 'dark',})
-    // console.log('WALLET_CONNECT_PING:', process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ])
-    // const BRIDGE_URL = (await fetch(process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_PING` ] ?? '')
-    //   .then(({status}) => {
-    //     return status === 200
-    //       ? process.env[ `${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_WSS_BRIDGE` ]
-    //       : DEFAULT_BRIDGE;
-    //   })
-    //   .catch(() => {
-    //     return DEFAULT_BRIDGE;
-    //   })) ?? DEFAULT_BRIDGE;
     const clientMeta = {
       description: 'Loopring Layer 2',
       url: "htts://loopring.io",
@@ -62,7 +47,6 @@ export const WalletConnectV2Provide = async (props: {
     // TODO test:
     // console.log('EthereumProvider init:', 'chainID', props.chainId)
     if (ethereumProvider && ethereumProvider?.modal) {
-
       ethereumProvider.modal.setTheme({
         themeMode: !(props?.darkMode) ? 'light' : 'dark',
         themeVariables: {
@@ -72,17 +56,8 @@ export const WalletConnectV2Provide = async (props: {
       ethereumProvider.reset();
       ethereumProvider.setChainIds([ethereumProvider.formatChainId(Number(props.chainId ?? 1))]);
       ethereumProvider.rpc.chains = [ethereumProvider.formatChainId(Number(props.chainId ?? 1))];
-      // ConfigCtrl.setConfig({
-      //   walletConnectVersion: 2,
-      //   projectId: ethereumProvider.rpc.projectId,
-      //   standaloneChains:  ethereumProvider.rpc.chains,
-      //   //[ethereumProvider.formatChainId(Number(props.chainId ?? 1))],
-      //   enableStandaloneMode: true,
-      //   // defaultChain: Number(props.chainId ?? 1),
-      //   ...ethereumProvider.rpc.qrModalOptions
-      // })
-      // console.log('modal', ethereumProvider.modal, ethereumProvider.modal.url);
-      // console.log('chain', ethereumProvider.chainId);
+      // myLog('modal', ethereumProvider.modal, ethereumProvider.modal.url);
+      // myLog('chain', ethereumProvider.chainId);
     } else {
       ethereumProvider = await EthereumProvider.init({
         chains: [Number(props.chainId ?? 1)],
@@ -105,6 +80,7 @@ export const WalletConnectV2Provide = async (props: {
       ethereumProvider.on('display_uri', (display_uri: string) => {
         walletServices.sendProcess(ProcessingType.nextStep, {step: ProcessingStep.showQrcode, qrCodeUrl: display_uri});
       })
+      ethereumProvider.modal.subscribeModal()
     }
 
 
@@ -135,7 +111,13 @@ export const WalletConnectV2Provide = async (props: {
     console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.WalletConnect,
-      error: (error as any)?.message ?? error,
+      error: {
+        code:
+          /Connection request reset. Please try again/.test((error as any)?.message ?? '')
+            ? 700201
+            : 700003,
+        message: (error as any).message,
+      },
     });
   }
 };
