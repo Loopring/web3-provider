@@ -81,8 +81,8 @@ export const WalletConnectV2Provide = async (props: {
       //   // defaultChain: Number(props.chainId ?? 1),
       //   ...ethereumProvider.rpc.qrModalOptions
       // })
-      // console.log('modal', ethereumProvider.modal, ethereumProvider.modal.url);
-      // console.log('chain', ethereumProvider.chainId);
+      console.log('modal', ethereumProvider.modal, ethereumProvider.modal.url);
+      console.log('chain', ethereumProvider.chainId);
     } else {
       ethereumProvider = await EthereumProvider.init({
         chains: [Number(props.chainId ?? 1)],
@@ -105,6 +105,7 @@ export const WalletConnectV2Provide = async (props: {
       ethereumProvider.on('display_uri', (display_uri: string) => {
         walletServices.sendProcess(ProcessingType.nextStep, {step: ProcessingStep.showQrcode, qrCodeUrl: display_uri});
       })
+      ethereumProvider.modal.subscribeModal()
     }
 
 
