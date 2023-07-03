@@ -56,8 +56,6 @@ export const WalletConnectV2Provide = async (props: {
       ethereumProvider.reset();
       ethereumProvider.setChainIds([ethereumProvider.formatChainId(Number(props.chainId ?? 1))]);
       ethereumProvider.rpc.chains = [ethereumProvider.formatChainId(Number(props.chainId ?? 1))];
-      // myLog('modal', ethereumProvider.modal, ethereumProvider.modal.url);
-      // myLog('chain', ethereumProvider.chainId);
     } else {
       ethereumProvider = await EthereumProvider.init({
         chains: [Number(props.chainId ?? 1)],
