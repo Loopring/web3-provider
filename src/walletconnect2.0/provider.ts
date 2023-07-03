@@ -12,7 +12,6 @@ import {
 import { ConnectProvides } from '../providers';
 import UniversalProvider from '@walletconnect/universal-provider';
 import EthereumProvider from "@walletconnect/ethereum-provider"
-import { myLog } from '../utils';
 
 const methods = [
   "eth_accounts",
