@@ -36,25 +36,35 @@ yarn install @loopring-web/web3-provider
 ## Configuration
 
 ### env.product
-
 - React .env.${DOMAIN}
 
 ```.env.product
+# Get your projectId at https://cloud.walletconnect.com
+REACT_APP_WALLET_CONNECT_V2_ID=""
 REACT_APP_RPC_URL_1=https://mainnet.eth.loopring.io
 REACT_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
-REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
-REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
+#self-rely
+#REACT_APP_WALLET_CONNECT_WSS_BRIDGE
+#REACT_APP_WALLET_CONNECT_PING
+#legacy walletConnect V1
+#REACT_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
+#REACT_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
 ```
 
 - Vue .env.${DOMAIN}
 
 ```.env.product
+# Get your projectId at https://cloud.walletconnect.com
+VUE_APP_WALLET_CONNECT_V2_ID=""
 VUE_APP_RPC_URL_1=https://mainnet.eth.loopring.io
 VUE_APP_RPC_URL_5=https://goerli.infura.io/v3/b951a403f3d3426fb2008c6923254dbc
-VUE_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
-VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
-REACT_APP_WALLET_CONNECT_WSS_BRIDGE
-REACT_APP_WALLET_CONNECT_PING
+#self-rely
+#VUE_APP_WALLET_CONNECT_WSS_BRIDGE
+#VUE_APP_WALLET_CONNECT_PING
+#legacy walletConnect V1
+#VUE_APP_WALLET_CONNECT_BRIDGE=https://wcbridge.loopring.io
+#VUE_APP_WALLET_CONNECT_PING=https://wcbridge.loopring.io/hello
+
 ```
 
 ```ts
