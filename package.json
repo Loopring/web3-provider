@@ -36,7 +36,7 @@
     "@coinbase/wallet-sdk": "^3.7.1",
     "@metamask/detect-provider": "^2.0.0",
     "@reduxjs/toolkit": "^1.6.1",
-    "@walletconnect/ethereum-provider": "2.8.2",
+    "@walletconnect/ethereum-provider": "2.8.6",
     "@walletconnect/modal": "2.4.7",
     "@walletconnect/universal-provider": "2.8.0",
     "@walletconnect/web3-provider": "1.8.0",
