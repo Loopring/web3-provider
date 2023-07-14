@@ -11,31 +11,32 @@ export function getCachedSession(): any {
   }
   return session;
 }
+
 export const IsMobile = {
-  Android: function () {
+  Android: function() {
     return navigator.userAgent.match(/Android/i);
   },
-  BlackBerry: function () {
+  BlackBerry: function() {
     return navigator.userAgent.match(/BlackBerry/i);
   },
-  iOS: function () {
+  iOS: function() {
     return navigator.userAgent.match(/iPhone|iPad|iPod/i);
   },
-  Opera: function () {
+  Opera: function() {
     return navigator.userAgent.match(/Opera Mini/i);
   },
-  Windows: function () {
+  Windows: function() {
     return (
       navigator.userAgent.match(/IEMobile/i) ||
       navigator.userAgent.match(/WPDesktop/i)
     );
   },
-  Ethereum: function () {
+  Ethereum: function() {
     //@ts-ignore
     return window?.ethereum && window?.ethereum.isImToken;
   },
 
-  any: function () {
+  any: function() {
     return (
       IsMobile.Android() ||
       IsMobile.BlackBerry() ||
@@ -44,11 +45,11 @@ export const IsMobile = {
       IsMobile.Windows() ||
       IsMobile.Ethereum()
     );
-  },
+  }
 };
 
 export const IsWhichWebView = {
-  any: function () {
+  any: function() {
     //@ts-ignore
     if (window?.ethereum.isImToken) {
       return "isImToken";
@@ -57,5 +58,5 @@ export const IsWhichWebView = {
     if (window?.ethereum.isMetaMask) {
       return "isMetaMask";
     }
-  },
+  }
 };

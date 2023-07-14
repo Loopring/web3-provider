@@ -37,6 +37,7 @@ const events = [
 ];
 let ethereumProvider: any = undefined;
 const NameSpace = "eip155:";
+
 export const WalletConnectV2Provide = async (props: {
   chainId: number;
   account?: string;
@@ -45,12 +46,6 @@ export const WalletConnectV2Provide = async (props: {
   { provider?: UniversalProvider | EthereumProvider; web3?: Web3 } | undefined
 > => {
   try {
-    const clientMeta = {
-      description: "Loopring Layer 2",
-      url: "htts://loopring.io",
-      icons: ["https://static.loopring.io/assets/svg/loopring.svg"],
-      name: "Loopring"
-    };
     // TODO test:
     // console.log('EthereumProvider init:', 'chainID', props.chainId)
     if (ethereumProvider && ethereumProvider?.modal) {
@@ -79,7 +74,7 @@ export const WalletConnectV2Provide = async (props: {
         // relayUrl: BRIDGE_URL,
         methods, // OPTIONAL ethereum methods
         events,
-        metadata: clientMeta, // OPTIONAL metadata of your app
+        metadata: ConnectProvides.walletConnectClientMeta, // OPTIONAL metadata of your app
         // @ts-ignore
         qrModalOptions: {
           themeVariables: {

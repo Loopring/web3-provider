@@ -8,7 +8,7 @@ if (
 ) {
   _myLog = console.log;
 } else {
-  _myLog = function (message?: any, ...optionalParams: any[]) {
+  _myLog = function(message?: any, ...optionalParams: any[]) {
     return "";
   };
 }
@@ -20,7 +20,7 @@ if (
 ) {
   _myError = console.error;
 } else {
-  _myError = function (message?: any, ...optionalParams: any[]) {
+  _myError = function(message?: any, ...optionalParams: any[]) {
     return "";
   };
 }

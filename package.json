@@ -45,6 +45,7 @@
     "web3": "^1.10.0"
   },
   "devDependencies": {
+    "prettier": "2.8.8",
     "@rollup/plugin-commonjs": "^18.0.0",
     "@types/node": "^12.0.0",
     "@walletconnect/jsonrpc-types": "^1.0.3",
