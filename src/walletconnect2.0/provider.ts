@@ -7,33 +7,34 @@ import {
   onChainChange,
   ProcessingStep,
   ProcessingType,
-  RPC_URLS
+  RPC_URLS,
 } from "../command";
 import { ConnectProvides } from "../providers";
 import UniversalProvider from "@walletconnect/universal-provider";
 import EthereumProvider from "@walletconnect/ethereum-provider";
 
 const methods = [
-  "eth_accounts",
-  "eth_chainId",
-  "eth_call",
-  "eth_getBalance",
-  "eth_ecRecover",
-  "eth_signTypedData_v4",
-  "eth_signTransaction",
-  "eth_sendTransaction",
-  "eth_sendRawTransaction",
-  "eth_signTypedData",
+  "eth_sign",
   "personal_sign",
-  "personal_ecRecover",
-  "eth_sign"
+  "eth_signTypedData",
+  "eth_signTypedData_v4",
+  "eth_sendTransaction",
+  // "eth_sign"
+  // "eth_accounts",
+  // "eth_chainId",
+  // "eth_call",
+  // "eth_getBalance",
+  // "eth_ecRecover",
+  // "eth_signTransaction",
+  // "eth_sendRawTransaction",
+  // "personal_ecRecover",
 ];
 const events = [
   "chainChanged",
   "accountsChanged",
   "message",
   "disconnect",
-  "connect"
+  "connect",
 ];
 let ethereumProvider: any = undefined;
 const NameSpace = "eip155:";
@@ -52,20 +53,20 @@ export const WalletConnectV2Provide = async (props: {
       ethereumProvider.modal.setTheme({
         themeMode: !props?.darkMode ? "light" : "dark",
         themeVariables: {
-          "--w3m-z-index": "9999"
-        }
+          "--w3m-z-index": "9999",
+        },
       });
       ethereumProvider.reset();
       ethereumProvider.setChainIds([
-        ethereumProvider.formatChainId(Number(props.chainId ?? 1))
+        ethereumProvider.formatChainId(Number(props.chainId ?? 1)),
       ]);
       ethereumProvider.rpc.chains = [
-        ethereumProvider.formatChainId(Number(props.chainId ?? 1))
+        ethereumProvider.formatChainId(Number(props.chainId ?? 1)),
       ];
     } else {
       ethereumProvider = await EthereumProvider.init({
         chains: [Number(props.chainId ?? 1)],
-        optionalChains: AvaiableNetwork.map(item => Number(item)),
+        optionalChains: AvaiableNetwork.map((item) => Number(item)),
         projectId:
           process.env[`${ConnectProvides.APP_FRAMEWORK}WALLET_CONNECT_V2_ID`] ??
           "",
@@ -78,15 +79,15 @@ export const WalletConnectV2Provide = async (props: {
         // @ts-ignore
         qrModalOptions: {
           themeVariables: {
-            "--w3m-z-index": "9999"
+            "--wcm-z-index": "9999",
           },
-          themeMode: !props?.darkMode ? "light" : "dark"
-        }
+          themeMode: !props?.darkMode ? "light" : "dark",
+        },
       });
       ethereumProvider.on("display_uri", (display_uri: string) => {
         walletServices.sendProcess(ProcessingType.nextStep, {
           step: ProcessingStep.showQrcode,
-          qrCodeUrl: display_uri
+          qrCodeUrl: display_uri,
         });
       });
       ethereumProvider.modal.subscribeModal();
@@ -124,8 +125,8 @@ export const WalletConnectV2Provide = async (props: {
         )
           ? 700201
           : (error as any)?.code ?? 700003,
-        message: (error as any).message
-      }
+        message: (error as any).message,
+      },
     });
   }
 };

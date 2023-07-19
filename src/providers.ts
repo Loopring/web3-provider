@@ -11,7 +11,7 @@ import {
   ExtensionUnsubscribe,
   onChainChange,
   WalletConnectSubscribe,
-  WalletConnectUnsubscribe
+  WalletConnectUnsubscribe,
 } from "./command";
 import { Web3Provider } from "@ethersproject/providers";
 import UniversalProvider, { Metadata } from "@walletconnect/universal-provider";
@@ -28,8 +28,11 @@ export class ConnectProvides {
   private static _CLIENT_META: Metadata = {
     description: "Loopring Layer 2",
     url: "https://loopring.io",
-    icons: ["https://static.loopring.io/assets/svg/loopring.svg"],
-    name: "Loopring"
+    icons: [
+      "https://static.loopring.io/assets/images/logo192.png",
+      "https://static.loopring.io/assets/svg/loopring.svg",
+    ],
+    name: "Loopring",
   };
   public usedProvide:
     | undefined
