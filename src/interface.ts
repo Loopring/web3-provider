@@ -4,3 +4,4 @@ export type Send = (
   method: string,
   params?: any[]
 ) => Promise<SendReturnResult | SendReturn>;
+export const NameSpace = "eip155";

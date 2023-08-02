@@ -21,6 +21,7 @@ import EthereumProvider from "@walletconnect/ethereum-provider";
 import { myLog } from "./utils";
 import { IsMobile } from "./utilities";
 import { WalletConnectProvide } from "./walletConnect/provider";
+import { NameSpace } from "./interface";
 
 export class ConnectProvides {
   public static client: SignClient | undefined;
@@ -186,9 +187,27 @@ export class ConnectProvides {
           await onChainChange(this.usedProvide, chainId);
           break;
         case ConnectProviders.WalletConnect:
-          this.clear();
-          await (this.usedProvide as EthereumProvider).disconnect();
-          this.WalletConnect({ chainId, darkMode: this.darkMode });
+          const optionalChains =
+            (this.usedProvide as EthereumProvider)?.session?.namespaces[
+              (this.usedProvide as any).namespace
+              ]?.chains ?? [];
+          myLog(
+            "ConnectProviders.WalletConnect optionalChains",
+            optionalChains
+          );
+
+          if (
+            optionalChains?.length &&
+            optionalChains.includes(
+              `${(this.usedProvide as any).namespace}:${chainId}`
+            )
+          ) {
+            await onChainChange(this.usedProvide, chainId);
+          } else {
+            this.clear();
+            await (this.usedProvide as EthereumProvider).disconnect();
+            this.WalletConnect({ chainId, darkMode: this.darkMode });
+          }
       }
     }
   };

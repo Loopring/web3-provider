@@ -19,16 +19,16 @@ const methods = [
   "eth_signTypedData",
   "eth_signTypedData_v4",
   "eth_sendTransaction",
-  // "eth_sign"
   // "eth_accounts",
   // "eth_chainId",
   // "eth_call",
   // "eth_getBalance",
   // "eth_ecRecover",
-  // "eth_signTransaction",
-  // "eth_sendRawTransaction",
   // "personal_ecRecover",
 ];
+// "eth_signTransaction",
+// "eth_sendRawTransaction",
+
 const events = [
   "chainChanged",
   "accountsChanged",
@@ -37,7 +37,6 @@ const events = [
   "connect",
 ];
 let ethereumProvider: any = undefined;
-const NameSpace = "eip155:";
 
 export const WalletConnectV2Provide = async (props: {
   chainId: number;
@@ -47,8 +46,6 @@ export const WalletConnectV2Provide = async (props: {
   { provider?: UniversalProvider | EthereumProvider; web3?: Web3 } | undefined
 > => {
   try {
-    // TODO test:
-    // console.log('EthereumProvider init:', 'chainID', props.chainId)
     if (ethereumProvider && ethereumProvider?.modal) {
       ethereumProvider.modal.setTheme({
         themeMode: !props?.darkMode ? "light" : "dark",
