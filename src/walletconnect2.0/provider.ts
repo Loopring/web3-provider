@@ -19,23 +19,52 @@ const methods = [
   "eth_signTypedData",
   "eth_signTypedData_v4",
   "eth_sendTransaction",
+
   // "eth_accounts",
   // "eth_chainId",
   // "eth_call",
   // "eth_getBalance",
   // "eth_ecRecover",
   // "personal_ecRecover",
+  // "eth_signTransaction",
+  // "eth_sendRawTransaction",
 ];
-// "eth_signTransaction",
-// "eth_sendRawTransaction",
+const optionalMethods = [
+  "personal_sign",
+  "eth_sendTransaction",
+  "eth_accounts",
+  "eth_requestAccounts",
+  "eth_call",
+  "eth_getBalance",
+  "eth_sendRawTransaction",
+  "eth_sign",
+  "eth_signTransaction",
+  "eth_signTypedData",
+  "eth_signTypedData_v3",
+  "eth_signTypedData_v4",
+  "wallet_switchEthereumChain",
+  "wallet_addEthereumChain",
+  "wallet_getPermissions",
+  "wallet_requestPermissions",
+  "wallet_registerOnboarding",
+  "wallet_watchAsset",
+  "wallet_scanQRCode",
+]
+
+
 
 const events = [
-  "chainChanged",
   "accountsChanged",
+  "chainChanged"
+  // "message",
+  // "disconnect",
+  // "connect",
+];
+const optionalEvents = [
   "message",
   "disconnect",
   "connect",
-];
+]
 let ethereumProvider: any = undefined;
 
 export const WalletConnectV2Provide = async (props: {
@@ -69,14 +98,16 @@ export const WalletConnectV2Provide = async (props: {
           "",
         showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
         rpcMap: RPC_URLS,
+        events,
+        optionalEvents,
         // relayUrl: BRIDGE_URL,
         methods, // OPTIONAL ethereum methods
-        events,
+        optionalMethods,
         metadata: ConnectProvides.walletConnectClientMeta, // OPTIONAL metadata of your app
         // @ts-ignore
         qrModalOptions: {
           themeVariables: {
-            "--wcm-z-index": "9999",
+            "--w3m-z-index": "9999",
           },
           themeMode: !props?.darkMode ? "light" : "dark",
         },
