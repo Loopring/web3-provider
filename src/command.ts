@@ -192,7 +192,8 @@ export enum ConnectProvidersSignMap {
 
 export let _RPC_URLS: { [chainId: number]: string } = {
   1: process.env[`${ConnectProvides.APP_FRAMEWORK}RPC_URL_1`] as string,
-  5: process.env[`${ConnectProvides.APP_FRAMEWORK}RPC_URL_5`] as string
+  5: process.env[`${ConnectProvides.APP_FRAMEWORK}RPC_URL_5`] as string,
+  11155111: process.env[`${ConnectProvides.APP_FRAMEWORK}RPC_URL_11155111`] as string
 };
 if (process.env[`${ConnectProvides.APP_FRAMEWORK}RPC_OTHERS`]) {
   const ids =
